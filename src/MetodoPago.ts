@@ -1,11 +1,11 @@
 import { DiaSemana } from "./DiaSemana";
-//import { Pedido } from "./Pedido";
+import { Pedido } from "./Pedido";
 
-export abstract class MetodoPago {
-    private diaDescuento:DiaSemana[];
+export default abstract class MetodoPago {
+    //private diaDescuento:DiaSemana[];
 
-    public constructor(diaDescuento:DiaSemana[]) {
-        this.diaDescuento = diaDescuento;
+    public constructor(private diaDescuento:DiaSemana[]) {
+        //this.diaDescuento = diaDescuento;
     }
     
     public getDiaDescuento():DiaSemana[] {
@@ -16,8 +16,8 @@ export abstract class MetodoPago {
         this.diaDescuento = descuento;
     }
 
-    //public obtenerDescuentoSemana():number {}
+    public abstract obtenerDescuentoSemana():number;
 
-    //public realizarPago(pedido:Pedido):void {}
+    public abstract realizarPago(pedido:Pedido):void;
 
 }

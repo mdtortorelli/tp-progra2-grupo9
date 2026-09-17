@@ -1,5 +1,7 @@
 //import { MetodoPago } from "./MetodoPago";
 
-export abstract class Tarjeta {
+import MetodoPago from "./MetodoPago";
+
+export abstract class Tarjeta extends MetodoPago {
    
 }
