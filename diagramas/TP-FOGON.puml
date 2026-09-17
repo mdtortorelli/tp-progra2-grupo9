@@ -1,0 +1,156 @@
+@startuml
+
+class Restaurante{
+    - pedidosTotales:Pedido[]
+    - estaciones: Estaciones
+
+    + obtenerPedidosFinalizados():Pedido[]
+    + getters y setters ()
+}
+
+abstract class Pedido{
+    - cliente:Cliente,
+    - pedidosItems:Item[]
+    - estado:EstadoPedidos
+    - metodoDePago:MetodoPago
+
+    + agregarItem():void
+    + eliminarItem():void
+    + obtenerEstadosItems():void
+    + getters y setters ()
+    
+}
+
+class Salon extends Pedido implements Mozo{
+    - mesa:Mesa
+}
+
+class Retiro extends Pedido implements Mozo{
+    - horarioRetiro:DateTime
+}
+
+class Envio extends Pedido{
+    - direccion:String
+    - costo:number
+}
+
+enum EstadoProducto{
+    PENDIENTE
+    EN_PREPARACION
+    LISTO
+}
+enum EstadoPedidos{
+    EN_CONSTRUCCION
+    CONFIRMADO
+    ENVIADO
+}
+
+
+class Menu{
+    - categoria:CategoriaMenu
+    - itemsMenu:Item
+
+    + getters y setters ()
+}
+
+interface Item{
+    + calcularPrecio():number
+}
+
+class Mesa{
+}
+
+interface Mozo{
+    + eliminarItem():void
+    + obtenerEstadoPedido(p:Pedido):void
+}
+
+abstract class Producto implements Item{
+    - categoriaProd:CategoriaProd
+    - nombreProd:String
+    - precio:number
+    - descripcion:String
+    - estado:EstadoProducto
+    + getters y setters ()    
+}
+
+class Combo implements Item{
+    - productosCombos:Producto[]
+    - precioCombo:number
+    - tipoDescuento:tipoDescuento
+    + getters y setters ()
+}
+
+
+class categoriaMenu{
+    - productos:Producto[]
+
+    + obtenerProductos():Producto[]
+    + getters y setters ()
+}
+
+class categoriaProd{
+}
+
+abstract class MetodoPago{
+    - diaDescuento:DiasSemana[]
+
+    + obtenerDescuentoSemana():number
+    + realizarPago(p:Pedido):void
+    + getters y setters ()
+}
+
+class Efectivo extends MetodoPago{
+    - descuento:double
+
+    + calcularDescuento():number
+    + getters y setters ()
+}
+abstract class Tarjeta extends MetodoPago{}
+
+class Debito extends Tarjeta{}
+
+class Credito extends Tarjeta{}
+class BilleteraVirtual extends MetodoPago{}
+
+
+
+
+enum DiasSemana{
+    LUNES
+    MARTES
+    MIERCOLES
+    JUEVES
+    VIERNES
+    SABADO
+    DOMINGO
+}
+
+
+abstract class Estaciones{
+    - productos:Producto[]
+    - categoria:
+
+    + getters y setters ()
+}
+
+class Parrilla extends Estaciones{}
+class CocinaFria extends Estaciones{}
+class Barra extends Estaciones{}
+class CocinaDulce extends Estaciones{}
+
+
+
+
+
+Menu *-- categoriaMenu
+Producto *--categoriaProd
+Pedido .r.> Item
+Menu .l.> Item
+Salon *-- Mesa
+Combo *-r-Producto
+Pedido *-- MetodoPago
+Restaurante *--r-- Estaciones
+Restaurante *--- Pedido
+
+
