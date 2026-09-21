@@ -1,10 +1,16 @@
 @startuml
 
 class Restaurante{
-    - pedidosTotales:Pedido[]
-    - estaciones: Estaciones
+    - menu: Menu
+    - pedidosTotales: Pedido[]
+    - estaciones: Estacion[]
 
-    + obtenerPedidosFinalizados():Pedido[]
+    + registrarPedido(p: Pedido): void
+    + agregarEstacion(e: Estacion): void
+    + buscarEstacionPara(prod: Producto): Estacion
+    + confirmarPedido(p: Pedido): void
+    + facturarPedido(p: Pedido, m: MetodoPago): void
+    + obtenerPedidosFinalizados(): Pedido[]
     + getters y setters ()
 }
 
@@ -127,22 +133,37 @@ enum DiasSemana{
 }
 
 
-abstract class Estaciones{
-    - productos:Producto[]
-    - categoria:
+abstract class Estacion{
+    - nombre: String
+    - categoria: CategoriaProd
+    - cola: Queue<Producto>
 
+    + puedePreparar(prod: Producto): boolean
+    + recibir(prod: Producto): void
+    + comenzarSiguiente(): Producto
+    + marcarListo(prod: Producto): void
+    + obtenerPendientes(): Producto[]
     + getters y setters ()
 }
 
-class Parrilla extends Estaciones{}
-class CocinaFria extends Estaciones{}
-class Barra extends Estaciones{}
-class CocinaDulce extends Estaciones{}
+class Parrilla extends Estacion{}
+class CocinaFria extends Estacion{}
+class Barra extends Estacion{}
+class CocinaDulce extends Estacion{}
+
+class ItemPedido {
+    - item: Item
+    - cantidad: number
+    - estado: EstadoItem
+    + iniciar(): void
+    + finalizar(): void
+    + puedeModificarse(): boolean
+}
 
 
 
-
-
+Estacion o--  ItemPedido
+Pedido *--  ItemPedido
 Menu *-- categoriaMenu
 Producto *--categoriaProd
 Pedido .r.> Item
@@ -150,7 +171,11 @@ Menu .l.> Item
 Salon *-- Mesa
 Combo *-r-Producto
 Pedido *-- MetodoPago
-Restaurante *--r-- Estaciones
+Restaurante *--r-- Estacion
 Restaurante *--- Pedido
 
+
+note right of Estacion{
+    Habria que crear una cola por cada tipo de estado? (LISTO,EN_PREPARACION,PENDIENTE)
+}
 
