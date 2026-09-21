@@ -1,6 +1,7 @@
 import { CategoriaProd } from "./CategoriaProd";
 import { EstadoProducto } from "./EstadoProducto";
 
+/** Clase que representa un producto. */
 export class Producto {
 
   private nombre: string;
@@ -9,6 +10,13 @@ export class Producto {
   private estado: EstadoProducto;
   private categoria: CategoriaProd;
 
+  /**
+   *  Crea un nuevo producto.
+   *  @param {string} nombre - Nombre del nuevo producto.
+   *  @param {number} precio - Precio del producto.
+   *  @param {CategoriaProd} categoria - Categoria del producto.
+   *  @param {string} [descripcion=""] - Descripcion del producto es opcional. Valor por defecto es una cadena vacia.
+   */
   public constructor(nombre: string,
     precio: number,
     categoria: CategoriaProd,
