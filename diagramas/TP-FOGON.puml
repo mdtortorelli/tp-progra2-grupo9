@@ -65,13 +65,14 @@ interface Mozo{
     + obtenerEstadoPedido(p:Pedido):void
 }
 
-abstract class Producto implements Item{
-    - categoriaProd:CategoriaProd
-    - nombreProd:String
-    - precio:number
-    - descripcion:String
-    - estado:EstadoProducto
-    + getters y setters ()    
+class Producto {
+    - nombre: string
+    - precio: number
+    - descripcion: string
+    - categoria: CategoriaProd
+    - estado: EstadoProducto
+
+    + getters y setters ()
 }
 
 class Combo implements Item{
