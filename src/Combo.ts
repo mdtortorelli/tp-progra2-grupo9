@@ -7,30 +7,28 @@ export class Combo implements Item {
     private precioCombo: number;
     private tipoDescuento: TipoDescuento;
 
-    public constructor(productosCombo:Producto[],
-        precioCombo:number,
-        tipoDescuento:TipoDescuento) {
-            this.precioCombo = precioCombo;
+    public constructor(productosCombo:Producto[],        
+        tipoDescuento:TipoDescuento) {            
             this.productosCombo = productosCombo;
             this.tipoDescuento = tipoDescuento;
-    }
-
-    public getPrecioCombo():number {
-        return this.precioCombo;
-    }
-
-    public setPrecioCombo(precioCombo:number):void {
-        this.precioCombo = precioCombo;
+            this.precioCombo = this.tipoDescuento.aplicarDescuento(this);
     }
 
     public getProductosCombo():Producto[] {
         return this.productosCombo;
     }
 
-    public setProductosCombo(productosCombo:Producto[]):void {
-        this.productosCombo = productosCombo;
+    public agregarProductoCombo(producto:Producto):void {
+        this.productosCombo.push(producto);
+        this.precioCombo = this.calcularPrecioCombo();
+
     }
 
+    public quitarProductoCombo(producto:Producto):void {
+        this.productosCombo = this.productosCombo.filter(prod => prod != producto);
+        this.precioCombo = this.calcularPrecioCombo();
+    }
+    
     public getTipoDescuento():TipoDescuento {
         return this.tipoDescuento;
     }
@@ -39,12 +37,23 @@ export class Combo implements Item {
         this.tipoDescuento = tipoDescuento;
     }
 
-    public calcularPrecio():number
-    {
-        //TODO:logica con el precio y el tipo de descuento
-        //por ahora devuelve el precio del combo
+    public obtenerPrecio():number
+    {    
         return this.precioCombo;
     }
 
+    public obtenerPrecioSinDescuento():number
+    {
+        let precio = 0;
+        this.productosCombo.forEach(function(item) {
+            precio += item.getPrecio();
+        });
+
+        return precio;
+    }
+
+    private calcularPrecioCombo():number {
+        return this.tipoDescuento.aplicarDescuento(this);
+    }
 
 }
