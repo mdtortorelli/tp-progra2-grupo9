@@ -14,4 +14,12 @@ export class CategoriaMenu {
         return this.productos;
     }
 
+     public agregarProductoMenu(producto:Producto):void {
+        this.productos.push(producto);      
+    }
+
+    public quitarProductoMenu(producto:Producto):void {
+        this.productos = this.productos.filter(prod => prod != producto);
+    }
+    
 }
