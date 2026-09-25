@@ -4,6 +4,8 @@ import { Combo } from '../src/Combo';
 import { Producto } from '../src/Producto';
 import { CategoriaProd } from '../src/CategoriaProd';
 import { EstadoProducto } from '../src/EstadoProducto';
+import { Item } from '../src/Item';
+import { CategoriaMenu } from '../src/CategoriaMenu';
 
 export const tipoDescuentoFijoMock: TipoDescuento = {
     aplicarDescuento: function (combo: Combo): number {
@@ -58,4 +60,27 @@ export const productoMock: Producto = {
     }
 } as any;
 
-export const arrayProductosMock : MockProxy<Producto[]> = mock<Producto[]>();
+export var arrayProductosMock : MockProxy<Producto[]> = mock<Producto[]>();
+
+export let arrayItemsMock : MockProxy<Item[]> = mock<Item[]>();
+
+export const CategoriaMenuMock : CategoriaMenu = {
+    productos: arrayProductosMock,
+    obtenerProductos: function (): Producto[] {
+        return arrayProductosMock;
+    },
+    agregarProductoMenu: function (producto: Producto): void {
+        arrayProductosMock.push(producto);
+    },
+    quitarProductoMenu: function (producto: Producto): void {
+        let arrProductosMock = arrayProductosMock.filter(prod => prod != producto);
+        arrayProductosMock = arrProductosMock;
+    }
+} as any;
+
+export const itemMock : Item = {
+    obtenerPrecio: function (): number {
+        return 1000;
+    }
+}
+
