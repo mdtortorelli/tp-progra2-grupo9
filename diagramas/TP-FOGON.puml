@@ -1,4 +1,4 @@
-@startuml
+@startuml "TP Restaurante 'Fogón del Barrio' "
 
 class Restaurante{
     - pedidosTotales:Pedido[]
@@ -54,7 +54,7 @@ class Menu{
 }
 
 interface Item{
-    + calcularPrecio():number
+    + obtenerPrecio():number
 }
 
 class Mesa{
@@ -75,11 +75,30 @@ class Producto {
     + getters y setters ()
 }
 
-class Combo implements Item{
+class Combo implements Item {
     - productosCombos:Producto[]
     - precioCombo:number
-    - tipoDescuento:tipoDescuento
+    - tipoDescuento:TipoDescuento
     + getters y setters ()
+    + agregarProductoCombo(producto:Producto):void
+    + quitarProductoCombo(producto:Producto):void
+    + obtenerPrecioSinDescuento():number
+    - calcularPrecioCombo():number
+}
+
+interface TipoDescuento {
+   + aplicarDescuento(combo:Combo):number
+}
+
+class DescuentoFijo implements TipoDescuento {
+    - monto:number
+    + getters y setters ()
+}
+
+class DescuentoPorcentual implements TipoDescuento {
+    - porcentaje:number
+    + getters y setters ()
+    + convertirPorcentajeADecimal():number
 }
 
 

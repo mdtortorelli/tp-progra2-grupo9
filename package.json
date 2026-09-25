@@ -32,5 +32,8 @@
   },
   "allowScripts": {
     "unrs-resolver@1.12.2": true
+  },
+  "dependencies": {
+    "jest-mock-extended": "^4.0.1"
   }
 }
