@@ -9,6 +9,7 @@ export class Pedido {
     private pedidosItems: Item[]
     private estado: EstadoPedido
     private metodoDePago: MetodoPago
+    private total: number | null = null
 
     public constructor(cliente: Cliente, pedidosItems: Item[], metodoDePago: MetodoPago) {
         this.cliente = cliente
@@ -17,5 +18,11 @@ export class Pedido {
         this.estado = EstadoPedido.EN_CONSTRUCCION
     }
 
+    public getTotal(): number | null {
+        return this.total
+    }
+    public setTotal(total: number): void {
+        this.total = total
+    }
     
 }
