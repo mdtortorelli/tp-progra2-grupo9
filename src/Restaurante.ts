@@ -1,6 +1,7 @@
 import { Estacion } from "./Estacion";
 import { EstadoPedido } from "./EstadoPedido";
 import { Menu } from "./Menu";
+import MetodoPago from "./MetodoPago";
 import { Pedido } from "./Pedido";
 import { Producto } from "./Producto";
 
@@ -69,8 +70,27 @@ export class Restaurante {
         return estacionEncontrada;
     }
 
-    // !!!!!!!!!!!!!! RECORDATORIO !!!!!!!!!!! ver como esta hecho la clase metodo de pago para hacer el facturarPedido
+    //Hablar con los chicos para revisar metodos y demas para que el restaurante pueda facturar bien (Nuevo estaod de pedido en el enum, un metood para ver si el item esta listo y que realizarPago devuelva el monto)
+    public facturarPedido(pedido: Pedido, metodoPago: MetodoPago): number {
+        if (!this.pedidosTotales.includes(pedido)) {
+            throw new Error("El pedido no está registrado en el restaurante");
+        }
+        if (!metodoPago) {
+            throw new Error("El medio de pago es obligatorio");
+        }
+        if (pedido.getEstado() !== EstadoPedido.CONFIRMADO) {
+            throw new Error("Solo se pueden facturar pedidos confirmados");
+        }
+        if (!pedido.estaListo()) { 
+            throw new Error("No se puede facturar: hay ítems que no están listos");
+        }
 
+        pedido.setMetodoDePago(metodoPago);
+        const montoCobrado = metodoPago.realizarPago(pedido); 
+        pedido.setEstado(EstadoPedido.FACTURADO); 
+
+        return montoCobrado;
+    }
 
     //Ver de agregar u nuevo elemento en el enum para tener un estado mas descriptivo
     public obtenerPedidosFinalizados(): Pedido[] {
