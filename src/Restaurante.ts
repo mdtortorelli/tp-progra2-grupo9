@@ -72,6 +72,7 @@ export class Restaurante {
     // !!!!!!!!!!!!!! RECORDATORIO !!!!!!!!!!! ver como esta hecho la clase metodo de pago para hacer el facturarPedido
 
 
+    //Ver de agregar u nuevo elemento en el enum para tener un estado mas descriptivo
     public obtenerPedidosFinalizados(): Pedido[] {
         return this.pedidosTotales.filter((pedido) => pedido.getEstado() === EstadoPedido.ENVIADO)
     }
