@@ -1,3 +1,4 @@
+import { describe, test, expect, beforeEach, afterEach, it} from '@jest/globals';
 import { CategoriaProd } from "../src/CategoriaProd";
 import { EstadoProducto } from "../src/EstadoProducto";
 import { Producto } from "../src/Producto"
