@@ -1,3 +1,5 @@
+import { Combo } from "./Combo";
+
 export class TipoDescuento {
     private porcentaje: number;
 
@@ -16,4 +18,6 @@ export class TipoDescuento {
     public static obtenerMasBeneficioso(descuento1: number, descuento2: number): number {
         return Math.max(descuento1, descuento2);
     } 
+
+    public abstract aplicarDescuento(combo:Combo):number;
 }

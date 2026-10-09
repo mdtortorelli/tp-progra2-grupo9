@@ -26,4 +26,11 @@ export class Menu {
         this.itemsMenu = items;
     }
 
+    public agregarItem(item:Item):void {
+        this.itemsMenu.push(item);
+    }
+
+    public quitarItem(item:Item):void {
+        this.itemsMenu = this.itemsMenu.filter(i => i != item);
+    }
 }
