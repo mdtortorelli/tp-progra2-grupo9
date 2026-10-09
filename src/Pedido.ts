@@ -9,7 +9,7 @@ export abstract class Pedido {
     private estado: EstadoPedido;
     private metodoDePago: MetodoPago;
     private historialItems: Item[][];
- 
+    private total: number | null = null
         //momento magic NUMBER
     private static readonly cantidadABorrar = 1;
     private static readonly numeroUno = 1;
@@ -21,6 +21,13 @@ export abstract class Pedido {
         this.metodoDePago = metodoDePago;
         this.estado = EstadoPedido.EN_CONSTRUCCION;
         this.historialItems = [];
+    }
+
+    public getTotal(): number | null {
+        return this.total
+    }
+    public setTotal(total: number): void {
+        this.total = total
     }
  
  

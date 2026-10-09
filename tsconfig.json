@@ -15,7 +15,8 @@
     "experimentalDecorators": true,
     "types": [
       "node",
-      "jest"
+      "jest",
+      "mocha"
     ]
   },
   "include": [
