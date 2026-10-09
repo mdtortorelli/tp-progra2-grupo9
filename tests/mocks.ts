@@ -16,10 +16,11 @@ export const tipoDescuentoFijoMock: TipoDescuento = {
  
 export const tipoDescuentoPorcentualMock: TipoDescuento = {
     aplicarDescuento: function (combo: Combo): number {
-        const descuento = combo.obtenerPrecio()*0.25; 
+        const descuento = combo.obtenerPrecio() * 0.25;
         return descuento;
     }
-}
+} as any
+
 export const TipoDescuentoMock: MockProxy<TipoDescuento> = mock<TipoDescuento>();
 
 export const productoMock: Producto = {
