@@ -1,18 +1,18 @@
 import { Combo } from "./Combo";
 
-export class TipoDescuento {
-    private porcentaje: number;
+export abstract class TipoDescuento {
+    private descuento: number;
 
-    public constructor(porcentaje: number) {
-        this.porcentaje = porcentaje;
+    public constructor(descuento: number) {
+        this.descuento = descuento;
     }
 
-    public getPorcentaje(): number {
-        return this.porcentaje;
+    public getDescuento(): number {
+        return this.descuento;
     }
 
-    public setPorcentaje(porcentaje: number): void {
-        this.porcentaje = porcentaje;
+    protected setDescuento(descuento: number): void {
+        this.descuento = descuento;
     }
 
     public static obtenerMasBeneficioso(descuento1: number, descuento2: number): number {
