@@ -59,22 +59,24 @@ export abstract class Estacion {
 
     //Ver que onda la pregunta anterior para ver si aca tambien aplicar una cola en vez de una array
     public obtenerPendientes(): Producto[] {
-        const ArrayTemporal:Producto[] = []
-        let itemCola:Producto | undefined
+        const arrayTemporal: Producto[] = []
+        let itemCola: Producto | undefined
 
-        while(!this.colaProductos.isEmpty()){
+        while (!this.colaProductos.isEmpty()) {
             itemCola = this.colaProductos.dequeue()
             if (itemCola !== undefined) {
-                ArrayTemporal.push(itemCola)
+                arrayTemporal.push(itemCola)
             }
-        }  
+        }
 
-        const resultado = ArrayTemporal
+        const resultado: Producto[] = []
+        for (let i = 0; i < arrayTemporal.length; i++) {
+            resultado.push(arrayTemporal[i])
+        }
 
         let itemArray: Producto | undefined
-
-        while(ArrayTemporal.length > 0){
-            itemArray = ArrayTemporal.shift()
+        while (arrayTemporal.length > 0) {
+            itemArray = arrayTemporal.shift()
             if (itemArray !== undefined) {
                 this.colaProductos.enqueue(itemArray)
             }
@@ -82,6 +84,5 @@ export abstract class Estacion {
 
         return resultado
     }
-    
 
 }
