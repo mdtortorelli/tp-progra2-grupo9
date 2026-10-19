@@ -1,11 +1,11 @@
 import { Combo } from "./Combo";
 import { TipoDescuento } from "./TipoDescuento";
 
-export class DescuentoFijo implements TipoDescuento {
+export class DescuentoFijo extends TipoDescuento {
     private monto:number;
 
     public constructor(monto:number) {
-
+        super();
         this.monto = monto;
     }
 

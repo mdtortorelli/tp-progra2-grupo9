@@ -1,11 +1,14 @@
 import { DiaSemana } from "./DiaSemana";
 import { Pedido } from "./Pedido";
+import { TipoDescuento } from "./TipoDescuento";
 
 const CERO: number = 0;
+const CIEN: number = 100;
 
 export default abstract class MetodoPago {
     //private diaDescuento:DiaSemana[];
     private porcentajeDescuentoSemana: number;
+    private descuentoPropio: number = CERO;
 
     public constructor(
         private diaDescuento: DiaSemana[],
@@ -29,6 +32,12 @@ export default abstract class MetodoPago {
     public setPorcentajeDescuentoSemana(porcentajeDescuentoSemana:number):void {
         this.porcentajeDescuentoSemana = porcentajeDescuentoSemana;
     }
+    public getDescuentoPropio():number {
+        return this.descuentoPropio;
+    }
+    public setDescuentoPropio(descuentoPropio:number):void {
+        this.descuentoPropio = descuentoPropio;
+    }
 
     public obtenerDescuentoSemana(diaActual?: DiaSemana):number {
         if (diaActual !== undefined && this.diaDescuento.includes(diaActual)) {
@@ -37,6 +46,15 @@ export default abstract class MetodoPago {
         return CERO;
     }
 
-    public abstract realizarPago(pedido:Pedido, subtotal: number, diaActual?: DiaSemana):void;
+    public obtenerPorcentajeDescuento(diaActual?: DiaSemana):number {
+        return TipoDescuento.obtenerMasBeneficioso(this.getDescuentoPropio(), this.obtenerDescuentoSemana(diaActual));
+    }
+
+    public realizarPago(pedido:Pedido, subtotal: number, diaActual?: DiaSemana):void {
+        const porcentaje = this.obtenerPorcentajeDescuento(diaActual);
+        const descuento = (subtotal * porcentaje)/CIEN;
+        const total = subtotal - descuento;
+        pedido.setTotal(total);
+    }
 
 }
