@@ -30,7 +30,6 @@ export abstract class Pedido {
         this.total = total
     }
  
- 
     private guardarHistorial(): void {
         this.historialItems.push([...this.pedidosItems]);
     }
@@ -43,18 +42,16 @@ export abstract class Pedido {
         this.pedidosItems.push(item);
     }
  
- 
-   public quitarItem(item: Item): void {
-      if (this.estado !== EstadoPedido.EN_CONSTRUCCION) {
-          throw new Error("No se puede eliminar el item. El pedido ya esta confirmado");
+    public quitarItem(item: Item): void {
+        if (this.estado !== EstadoPedido.EN_CONSTRUCCION) {
+            throw new Error("No se puede eliminar el item. El pedido ya esta confirmado");
         }
-      this.guardarHistorial();
-    
-    
-      for (let i = 0; i < this.pedidosItems.length; i++) {
-          if (this.pedidosItems[i] === item) {
-              this.pedidosItems.splice(i,Pedido.cantidadABorrar); 
-              break;
+        this.guardarHistorial();
+
+        for (let i = 0; i < this.pedidosItems.length; i++) {
+            if (this.pedidosItems[i] === item) {
+                this.pedidosItems.splice(i, Pedido.cantidadABorrar); 
+                break;
             }
         }
     }
@@ -84,11 +81,10 @@ export abstract class Pedido {
             throw new Error("El pedido ya fue confirmado.");
         }
         if (this.pedidosItems.length === Pedido.indiceInicial) {
-            throw new Error("No se puede confirmar un pedido sin ítems.");
+            throw new Error("No se puede confirmar un pedido sin items.");
         }
         this.estado = EstadoPedido.CONFIRMADO;
     }
- 
  
     public getCliente(): Cliente {
         return this.cliente;
@@ -118,4 +114,3 @@ export abstract class Pedido {
         this.metodoDePago = metodoDePago;
     }
 }
- 
