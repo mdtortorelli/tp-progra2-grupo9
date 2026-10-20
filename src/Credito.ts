@@ -1,9 +1,8 @@
 import { DiaSemana } from "./DiaSemana";
-import { Pedido } from "./Pedido";
+// import { Pedido } from "./Pedido";
 import { Tarjeta } from "./Tarjeta";
 
 const UNA_CUOTA: number = 1;
-const CIEN: number = 100;
 const CERO: number = 0;
 
 export class Credito extends Tarjeta {
@@ -33,11 +32,11 @@ export class Credito extends Tarjeta {
     }
 
      
-    public realizarPago(pedido: Pedido, subtotal: number, diaActual?: DiaSemana): void {
+    /*public realizarPago(pedido: Pedido, subtotal: number, diaActual?: DiaSemana): void {
         // throw new Error("Not implemented")
         const porcentajeDescuento = this.obtenerDescuentoSemana(diaActual);
         const montoDescuento = (subtotal * porcentajeDescuento) / CIEN;
         const totalFinal=subtotal - montoDescuento;
         pedido.setTotal(totalFinal);
-    }
+    }*/
 }

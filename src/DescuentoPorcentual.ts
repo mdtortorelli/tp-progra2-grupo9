@@ -3,7 +3,7 @@ import { TipoDescuento } from "./TipoDescuento";
 
 export class DescuentoPorcentual extends TipoDescuento {
     
-    public constructor(porcentaje:number) {        
+    public constructor(porcentaje:number) {     
         try {
             const cero = 0;
             if (porcentaje <= cero) 
@@ -18,21 +18,24 @@ export class DescuentoPorcentual extends TipoDescuento {
         }
     }
 
+    public getPorcentaje():number {
+        return this.getDescuento();
+    }
 
     public setPorcentaje(porcentaje:number):void {
         try {
             const cero = 0;
             if (porcentaje <= cero) 
             {
-                throw new Error
+                throw new Error('El porcentaje no puede ser negativo')
             }
             this.setDescuento(porcentaje);
         } 
         catch(Error)
         {
-            throw new Error('El porcentaje no puede ser negativo')
+            throw new Error
         }
-        
+        this.porcentaje = porcentaje; 
     }
 
     private convertirPorcentajeADecimal():number {
@@ -40,20 +43,9 @@ export class DescuentoPorcentual extends TipoDescuento {
         return this.getDescuento() / cien;        
     }
 
+    // Devuelve el precio final del ítem con el descuento aplicado
     public aplicarDescuento(item: Item): number {
-        try {
-            const cero = 0;
-            const porcentajeDecimal =this.convertirPorcentajeADecimal()
-            let descuento = item.obtenerPrecio(); 
-            
-            if (porcentajeDecimal > cero)
-            {
-                descuento = descuento*porcentajeDecimal;    
-            }
-            return descuento;
-        } catch (Error)
-        {
-            throw new Error('Error al calcular el descuento porcentual')
-        }
+        const precio = item.obtenerPrecio();
+        return precio - precio * this.convertirPorcentajeADecimal();
     }
 }
