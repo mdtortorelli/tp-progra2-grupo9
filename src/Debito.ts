@@ -1,11 +1,9 @@
-import { Pedido } from "./Pedido";
 import { Tarjeta } from "./Tarjeta";
-import { DiaSemana } from "./DiaSemana";
 
-const CIEN: number = 100;
+// const CIEN: number = 100;
 
-export class Debito extends Tarjeta {
-        public obtenerDescuentoSemana(diaActual?: DiaSemana): number {
+export class Debito extends Tarjeta {}
+        /*public obtenerDescuentoSemana(diaActual?: DiaSemana): number {
             // throw new Error("Not implemented")  
             return super.obtenerDescuentoSemana(diaActual)
         }
@@ -18,4 +16,4 @@ export class Debito extends Tarjeta {
             const totalFinal=subtotal - montoDescuento;
             pedido.setTotal(totalFinal);
         }
-}
+}*/

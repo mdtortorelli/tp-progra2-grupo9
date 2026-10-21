@@ -1,8 +1,8 @@
 import { describe, test, expect, beforeEach, afterEach} from '@jest/globals';
 import {Menu} from '../src/Menu';
-import { MockProxy, mock } from 'jest-mock-extended';
+// import { MockProxy, mock } from 'jest-mock-extended';
 import { arrayItemsMock, arrayProductosMock, CategoriaMenuMock, itemMock } from './mocks';
-import { CategoriaMenu } from '../src/CategoriaMenu';
+// import { CategoriaMenu } from '../src/CategoriaMenu';
 
 describe(Menu, () => {
     

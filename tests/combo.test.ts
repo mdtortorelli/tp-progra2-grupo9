@@ -1,7 +1,7 @@
 import { describe, test, expect, beforeEach, afterEach} from '@jest/globals';
 import { Combo } from "../src/Combo"
-import { arrayProductosMock, productoMock, tipoDescuentoFijoMock, TipoDescuentoMock } from "./mocks";
-
+import { arrayProductosMock, productoMock, TipoDescuentoMock } from "./mocks";
+//tipoDescuentoFijoMock
 describe(Combo, () => {
     
     beforeEach( () => {
