@@ -232,7 +232,7 @@ describe("Pedido", () => {
 
     it("lanza error si no tiene ítems", () => {
       expect(() => pedido.confirmar()).toThrow(
-        "No se puede confirmar un pedido sin ítems."
+        "No se puede confirmar un pedido sin items."
       );
       expect(pedido.getEstado()).toBe(EstadoPedido.EN_CONSTRUCCION);
     });
