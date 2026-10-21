@@ -73,4 +73,10 @@ export class Producto implements Item {
   public obtenerPrecio(): number {
       return this.getPrecio();
   }
+
+  public obtenerProductos(): Array<Producto> {
+      const productos: Producto[] = [];
+      productos.push(this);
+      return productos;
+  }
 }

@@ -56,4 +56,7 @@ export class Combo implements Item {
         return this.tipoDescuento.aplicarDescuento(this);
     }
 
+    public obtenerProductos(): Array<Producto> {
+        return this.productosCombo;
+    }
 }
