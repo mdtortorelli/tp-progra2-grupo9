@@ -1,8 +1,9 @@
 import { CategoriaProd } from "./CategoriaProd";
 import { EstadoProducto } from "./EstadoProducto";
+import { Item } from "./Item";
 
 /** Clase que representa un producto. */
-export class Producto {
+export class Producto implements Item {
 
   private nombre: string;
   private precio: number;
@@ -67,5 +68,9 @@ export class Producto {
 
   public setEstado(estado: EstadoProducto): void {
     this.estado = estado;
+  }
+
+  public obtenerPrecio(): number {
+      return this.getPrecio();
   }
 }
