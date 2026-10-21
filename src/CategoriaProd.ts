@@ -1,3 +1,6 @@
-export class CategoriaProd {
-
+export enum CategoriaProd {
+    CARNE,
+    ENSALADA,
+    BEBIDA,
+    POSTRE
 }
