@@ -4,6 +4,7 @@ console.log('Execution dir:', __dirname);
 module.exports = {
   automock: false,
   collectCoverage: true,
+  collectCoverageFrom: ["src/**/*.ts"],
   coverageProvider: 'v8', //v8 seems to be really precise. and give us more accurate coverage on sonar
   coverageReporters: ["clover", "json", "lcov", ["text", { "skipFull": true }]],
   preset: "ts-jest",
