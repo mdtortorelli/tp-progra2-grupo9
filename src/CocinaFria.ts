@@ -1,13 +1,10 @@
+import { CategoriaProd } from "./CategoriaProd";
 import { Estacion } from "./Estacion";
-import { Producto } from "./Producto";
 
+/** Estación que prepara las ensaladas y platos fríos. */
 export class CocinaFria extends Estacion {
-
-    constructor(){
-        super()
-    }
-
-    public puedePreparar(prod: Producto): boolean {
-        return prod.getCategoria() === this.getCategoria()
+    /** Crea la cocina fría, que prepara los productos de categoría {@link CategoriaProd.ENSALADA}. */
+    public constructor() {
+        super("Cocina fria", CategoriaProd.ENSALADA)
     }
 }

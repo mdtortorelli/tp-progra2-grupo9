@@ -1,5 +1,7 @@
+import { DiaSemana } from "./DiaSemana";
 import { Estacion } from "./Estacion";
 import { EstadoPedido } from "./EstadoPedido";
+import { EstadoProducto } from "./EstadoProducto";
 import { Menu } from "./Menu";
 import MetodoPago from "./MetodoPago";
 import { Pedido } from "./Pedido";
@@ -10,69 +12,151 @@ export class Restaurante {
     private pedidosTotales: Pedido[]
     private estaciones: Estacion[]
 
-    constructor(menu:Menu, pedidosTotales:Pedido[], estaciones:Estacion[]){
-        this.menu=menu
-        this.pedidosTotales=pedidosTotales
-        this.estaciones=estaciones
+    /**
+     * @param {Menu} menu - Menú del restaurante.
+     * @param {Pedido[]} [pedidosTotales=[]] - Pedidos ya registrados.
+     * @param {Estacion[]} [estaciones=[]] - Estaciones de cocina disponibles.
+     */
+    public constructor(menu: Menu, pedidosTotales: Pedido[] = [], estaciones: Estacion[] = []) {
+        this.menu = menu
+        this.pedidosTotales = pedidosTotales
+        this.estaciones = estaciones
     }
 
-
-    public getMenu():Menu{
+    /** @returns {Menu} El menú del restaurante. */
+    public getMenu(): Menu {
         return this.menu
     }
 
-    public setMenu(menu:Menu):void{
-
-        this.menu=menu
+    /** @param {Menu} menu - Nuevo menú del restaurante. */
+    public setMenu(menu: Menu): void {
+        this.menu = menu
     }
 
-    public getPedidosTotales():Pedido[]{
+    /** @returns {Pedido[]} Todos los pedidos registrados. */
+    public getPedidosTotales(): Pedido[] {
         return this.pedidosTotales
     }
 
-    public getEstaciones():Estacion[]{
+    /** @returns {Estacion[]} Las estaciones de cocina. */
+    public getEstaciones(): Estacion[] {
         return this.estaciones
     }
 
-    //Mejora: Crear errores para cada tipo de error
-    public registrarPedido(pedido:Pedido):void{
-
+    /**
+     * Registra un pedido nuevo (de cualquier modalidad).
+     * @param {Pedido} pedido - Pedido en construcción a registrar.
+     * @throws {Error} Si el pedido falta, ya está registrado o no está en construcción.
+     */
+    public registrarPedido(pedido: Pedido): void {
         if (!pedido) {
             throw new Error("El pedido es obligatorio");
         }
-        if (this.pedidosTotales.includes(pedido)) {
+        if (this.estaRegistrado(pedido)) {
             throw new Error("El pedido ya esta registrado");
         }
         if (pedido.getEstado() !== EstadoPedido.EN_CONSTRUCCION) {
             throw new Error("Solo se pueden registrar pedidos que esten en construccion");
         }
         this.pedidosTotales.push(pedido);
-
     }
 
+    /**
+     * Indica si un pedido ya fue registrado en el restaurante.
+     * @param {Pedido} pedido - Pedido a buscar.
+     * @returns {boolean} `true` si el pedido está registrado.
+     */
+    private estaRegistrado(pedido: Pedido): boolean {
+        for (const registrado of this.pedidosTotales) {
+            if (registrado === pedido) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Agrega una estación de cocina.
+     * @param {Estacion} estacion - Estación a agregar.
+     * @throws {Error} Si la estación falta o ya fue agregada.
+     */
     public agregarEstacion(estacion: Estacion): void {
         if (!estacion) {
             throw new Error("La estacion es obligatoria");
         }
-        if (this.estaciones.includes(estacion)) {
+        if (this.tieneEstacion(estacion)) {
             throw new Error("La estacion ya esta registrada y no se puede agregar");
         }
         this.estaciones.push(estacion);
     }
 
-    public buscarEstacionPara(producto: Producto): Estacion {
-        const estacionEncontrada = this.estaciones.find((e) =>
-            e.puedePreparar(producto)
-        );
-        if (!estacionEncontrada) {
-            throw new Error("No hay estacion que pueda preparar este producto")
+    /**
+     * Indica si una estación ya fue agregada al restaurante.
+     * @param {Estacion} estacion - Estación a buscar.
+     * @returns {boolean} `true` si la estación ya está agregada.
+     */
+    private tieneEstacion(estacion: Estacion): boolean {
+        for (const agregada of this.estaciones) {
+            if (agregada === estacion) {
+                return true;
+            }
         }
-        return estacionEncontrada;
+        return false;
     }
 
-    //Hablar con los chicos para revisar metodos y demas para que el restaurante pueda facturar bien (Nuevo estaod de pedido en el enum, un metood para ver si el item esta listo y que realizarPago devuelva el monto)
-    public facturarPedido(pedido: Pedido, metodoPago: MetodoPago): number {
-        if (!this.pedidosTotales.includes(pedido)) {
+    /**
+     * Busca la estación que prepara un producto.
+     * @param {Producto} producto - Producto a preparar.
+     * @returns {Estacion} La primera estación que puede prepararlo.
+     * @throws {Error} Si ninguna estación puede prepararlo.
+     */
+    public buscarEstacionPara(producto: Producto): Estacion {
+        for (const estacion of this.estaciones) {
+            if (estacion.puedePreparar(producto)) {
+                return estacion;
+            }
+        }
+        throw new Error("No hay estacion que pueda preparar este producto");
+    }
+
+    /**
+     * Confirma un pedido y envía cada producto a la estación que lo prepara.
+     * Combos y productos sueltos se tratan igual: cada ítem informa qué productos hay que preparar.
+     * @param {Pedido} pedido - Pedido en construcción a confirmar.
+     * @throws {Error} Si el pedido no está registrado, no se puede confirmar
+     * o algún producto no tiene estación que lo prepare (en ese caso no se confirma nada).
+     */
+    public confirmarPedido(pedido: Pedido): void {
+        if (!this.estaRegistrado(pedido)) {
+            throw new Error("El pedido no está registrado en el restaurante");
+        }
+        const productos: Producto[] = [];
+        const estacionesAsignadas: Estacion[] = [];
+        for (const item of pedido.getItems()) {
+            for (const producto of item.obtenerProductos()) {
+                productos.push(producto);
+                estacionesAsignadas.push(this.buscarEstacionPara(producto));
+            }
+        }
+
+        pedido.confirmar();
+        for (let i = 0; i < productos.length; i++) {
+            estacionesAsignadas[i].recibir(productos[i]);
+        }
+    }
+
+    /**
+     * Factura un pedido confirmado cuyos productos están todos listos. El medio de pago aplica
+     * el descuento más beneficioso (efectivo o día especial) y guarda el total en el pedido.
+     * @param {Pedido} pedido - Pedido a facturar.
+     * @param {MetodoPago} metodoPago - Medio de pago elegido por el cliente.
+     * @param {DiaSemana} [diaActual] - Día de la semana, para el descuento por día especial.
+     * @returns {number} El monto cobrado.
+     * @throws {Error} Si el pedido no está registrado, falta el medio de pago, no está confirmado
+     * o tiene productos que no están listos.
+     */
+    public facturarPedido(pedido: Pedido, metodoPago: MetodoPago, diaActual?: DiaSemana): number {
+        if (!this.estaRegistrado(pedido)) {
             throw new Error("El pedido no está registrado en el restaurante");
         }
         if (!metodoPago) {
@@ -81,22 +165,32 @@ export class Restaurante {
         if (pedido.getEstado() !== EstadoPedido.CONFIRMADO) {
             throw new Error("Solo se pueden facturar pedidos confirmados");
         }
-        if (!pedido.estaListo()) { 
-            throw new Error("No se puede facturar: hay ítems que no están listos");
+
+        let subtotal = 0;
+        for (const item of pedido.getItems()) {
+            for (const producto of item.obtenerProductos()) {
+                if (producto.getEstado() !== EstadoProducto.LISTO) {
+                    throw new Error("No se puede facturar: hay ítems que no están listos");
+                }
+            }
+            subtotal += item.obtenerPrecio();
         }
 
         pedido.setMetodoDePago(metodoPago);
-        const montoCobrado = metodoPago.realizarPago(pedido); 
-        pedido.setEstado(EstadoPedido.FACTURADO); 
+        metodoPago.realizarPago(pedido, subtotal, diaActual);
+        pedido.setEstado(EstadoPedido.ENVIADO);
 
-        return montoCobrado;
+        return pedido.getTotal() as number;
     }
 
-    //Ver de agregar u nuevo elemento en el enum para tener un estado mas descriptivo
+    /** @returns {Pedido[]} Los pedidos ya facturados. */
     public obtenerPedidosFinalizados(): Pedido[] {
-        return this.pedidosTotales.filter((pedido) => pedido.getEstado() === EstadoPedido.ENVIADO)
+        const finalizados: Pedido[] = [];
+        for (const pedido of this.pedidosTotales) {
+            if (pedido.getEstado() === EstadoPedido.ENVIADO) {
+                finalizados.push(pedido);
+            }
+        }
+        return finalizados;
     }
-
-
-
 }

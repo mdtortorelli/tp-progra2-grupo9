@@ -1,17 +1,10 @@
 import { CategoriaProd } from "./CategoriaProd";
 import { Estacion } from "./Estacion";
-import { Producto } from "./Producto";
 
+/** Estación que prepara las bebidas. */
 export class Barra extends Estacion {
-
-
-    constructor(){
-        super()
+    /** Crea la barra, que prepara los productos de categoría {@link CategoriaProd.BEBIDA}. */
+    public constructor() {
+        super("Barra", CategoriaProd.BEBIDA)
     }
-
-
-    public puedePreparar(prod: Producto): boolean {
-        return prod.getCategoria() === this.getCategoria()
-    }
-    
 }

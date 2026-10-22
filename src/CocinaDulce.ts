@@ -1,13 +1,10 @@
+import { CategoriaProd } from "./CategoriaProd";
 import { Estacion } from "./Estacion";
-import { Producto } from "./Producto";
 
-export class CocinaDulce extends Estacion{
-    constructor(){
-        super()
-    }
-
-
-    public puedePreparar(prod: Producto): boolean {
-        return prod.getCategoria() === this.getCategoria()
+/** Estación que prepara los postres. */
+export class CocinaDulce extends Estacion {
+    /** Crea la cocina dulce, que prepara los productos de categoría {@link CategoriaProd.POSTRE}. */
+    public constructor() {
+        super("Cocina dulce", CategoriaProd.POSTRE)
     }
 }
