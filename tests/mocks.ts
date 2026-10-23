@@ -28,9 +28,9 @@ export const productoMock: Producto = {
     precio: 12000,
     descripcion: '',
     estado: EstadoProducto.PENDIENTE,
-    categoria: new CategoriaProd,
+    categoria: CategoriaProd.CARNE,
     getCategoria: function (): CategoriaProd {
-        return new CategoriaProd;
+        return CategoriaProd.CARNE;
     },
     setCategoria: function (categoria: CategoriaProd): void {
         jest.fn().mockReturnValue(CategoriaProd);
@@ -82,6 +82,9 @@ export const CategoriaMenuMock : CategoriaMenu = {
 export const itemMock : Item = {
     obtenerPrecio: function (): number {
         return 1000;
+    },
+    obtenerProductos: function (): Array<Producto> {
+        return arrayProductosMock;
     }
 }
 
