@@ -1,3 +1,4 @@
+import { describe, test, expect, beforeEach, afterEach, it} from '@jest/globals';
 import { CategoriaMenu } from '../src/CategoriaMenu';
 import { CategoriaProd } from '../src/CategoriaProd';
 import { Cliente } from '../src/Cliente';
@@ -160,7 +161,7 @@ describe('Restaurante', () => {
     });
 
     it('no confirma un pedido sin ítems', () => {
-      expect(() => restaurante.confirmarPedido(pedido)).toThrow('sin ítems');
+      expect(() => restaurante.confirmarPedido(pedido)).toThrow('No se puede confirmar un pedido sin items.');
     });
 
     it('no confirma un pedido que no está registrado', () => {
