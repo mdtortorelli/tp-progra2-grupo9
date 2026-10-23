@@ -8,7 +8,7 @@ describe("Producto", () => {
   let instance: Producto;
 
   beforeEach( () => {
-    instance = new Producto("Milanesa", 7000, new CategoriaProd());
+    instance = new Producto("Milanesa", 7000, CategoriaProd.CARNE);
   })
 
   test("Debe ser una instancia de la clase Producto", () => {

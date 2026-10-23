@@ -34,8 +34,7 @@ export class DescuentoPorcentual extends TipoDescuento {
         catch(Error)
         {
             throw new Error
-        }
-        this.setPorcentaje(porcentaje);
+        }        
     }
 
     private convertirPorcentajeADecimal():number {

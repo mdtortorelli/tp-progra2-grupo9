@@ -5,12 +5,15 @@ class Restaurante{
     - pedidosTotales: Pedido[]
     - estaciones: Estacion[]
 
+    - estaRegistrado(p: Pedido): boolean
+    - tieneEstacion(e: Estacion): boolean
     + registrarPedido(p: Pedido): void
     + agregarEstacion(e: Estacion): void
     + buscarEstacionPara(prod: Producto): Estacion
     + confirmarPedido(p: Pedido): void
     + facturarPedido(p: Pedido, m: MetodoPago): void
     + obtenerPedidosFinalizados(): Pedido[]
+    
     + getters y setters ()
 }
 
@@ -19,25 +22,49 @@ abstract class Pedido{
     - pedidosItems:Item[]
     - estado:EstadoPedidos
     - metodoDePago:MetodoPago
+    - historialItems: Item[][]
+    - total: number | null = null
 
+    - guardarHistorial(): void 
     + agregarItem():void
-    + eliminarItem():void
+    + quitarItem():void
+    + deshacerUltimaModificacion(): void
     + obtenerEstadosItems():void
-    + getters y setters ()
-    
+    + confirmar(): void
+
+    + getters y setters ()    
 }
 
-class Salon extends Pedido implements Mozo{
+class Salon extends Pedido implements AtencionPedido{
     - mesa:Mesa
+
+    + eliminarItem(): void
+    + obtenerEstadoPedido(): EstadoPedido
+    + consultarEstadosDeItems(): void
+    + confirmarPedido(): void
+
+    + getters y setters () 
 }
 
-class Retiro extends Pedido implements Mozo{
+class Retiro extends Pedido implements AtencionPedido{
     - horarioRetiro:DateTime
+
+    + eliminarItem(): void
+    + obtenerEstadoPedido(): EstadoPedido
+    + consultarEstadosDeItems(): void
+    + confirmarPedido(): void
+
+    + getters y setters () 
 }
 
 class Envio extends Pedido{
     - direccion:String
     - costo:number
+
+    - validarDireccion(direccion: string): void 
+    - validarCosto(costo: number): void 
+    
+    + getters y setters () 
 }
 
 enum EstadoProducto{
@@ -53,30 +80,41 @@ enum EstadoPedidos{
 
 
 class Menu{
-    - categoria:CategoriaMenu
-    - itemsMenu:Item
+    - categoria: CategoriaMenu
+    - itemsMenu: Item[]
 
+    + agregarItem(item:Item): void
+    + quitarItem(item:Item): void
     + getters y setters ()
 }
 
 interface Item{
-    + obtenerPrecio():number
+    + obtenerPrecio():number;
+    + obtenerProductos(): Array<Producto>
 }
 
 class Mesa{
+    - numero: number
+
+    + getters y setters ()
 }
 
-interface Mozo{
-    + eliminarItem():void
-    + obtenerEstadoPedido(p:Pedido):void
+interface AtencionPedido{
+    + eliminarItem(): void
+    + obtenerEstadoPedido(): EstadoPedido
+    + consultarEstadosDeItems(): void
+    + confirmarPedido(): void
 }
 
-class Producto {
+class Producto implements Item {
     - nombre: string
     - precio: number
     - descripcion: string
     - categoria: CategoriaProd
     - estado: EstadoProducto
+
+    + obtenerPrecio():number;
+    + obtenerProductos(): Array<Producto>
 
     + getters y setters ()
 }
@@ -85,26 +123,33 @@ class Combo implements Item {
     - productosCombos:Producto[]
     - precioCombo:number
     - tipoDescuento:TipoDescuento
-    + getters y setters ()
+
+    - calcularPrecioCombo():number
     + agregarProductoCombo(producto:Producto):void
     + quitarProductoCombo(producto:Producto):void
     + obtenerPrecioSinDescuento():number
-    - calcularPrecioCombo():number
+    
+    + obtenerPrecio():number;
+    + obtenerProductos(): Array<Producto>
+
+    + getters y setters ()    
 }
 
-interface TipoDescuento {
-   + aplicarDescuento(combo:Combo):number
-}
+class TipoDescuento {
+    - descuento: number
+    + obtenerMasBeneficioso(descuento1: number, descuento2: number): number
+    + aplicarDescuento(combo:Combo):number
 
-class DescuentoFijo implements TipoDescuento {
-    - monto:number
     + getters y setters ()
+}
+
+class DescuentoFijo implements TipoDescuento {   
+    + aplicarDescuento(combo:Combo):number   
 }
 
 class DescuentoPorcentual implements TipoDescuento {
-    - porcentaje:number
-    + getters y setters ()
     + convertirPorcentajeADecimal():number
+    + aplicarDescuento(combo:Combo):number  
 }
 
 
@@ -112,57 +157,72 @@ class categoriaMenu{
     - productos:Producto[]
 
     + obtenerProductos():Producto[]
-    + getters y setters ()
+    + agregarProductoMenu(producto:Producto):void
+    + quitarProductoMenu(producto:Producto):void
 }
 
-class categoriaProd{
+enum CategoriaProd {
+    CARNE,
+    ENSALADA,
+    BEBIDA,
+    POSTRE
+}
+
+enum DiaSemana {
+    LUNES,
+    MARTES,
+    MIERCOLES,
+    JUEVES,
+    VIERNES,
+    SABADO,
+    DOMINGO
 }
 
 abstract class MetodoPago{
-    - diaDescuento:DiasSemana[]
+    - diaDescuento: DiaSemana
+    - porcentajeDescuentoSemana: number
+    - descuentoPropio: number
 
     + obtenerDescuentoSemana():number
-    + realizarPago(p:Pedido):void
+    + obtenerPorcentajeDescuento(diaActual?: DiaSemana):number
+    + realizarPago(p:Pedido, subtotal: number, diaActual?: DiaSemana):void 
     + getters y setters ()
 }
 
 class Efectivo extends MetodoPago{
     - descuento:double
 
-    + calcularDescuento():number
-    + getters y setters ()
+    + getDescuento():number
+    + setDescuento(descuento: number): void
 }
+
 abstract class Tarjeta extends MetodoPago{}
 
 class Debito extends Tarjeta{}
 
-class Credito extends Tarjeta{}
-class BilleteraVirtual extends MetodoPago{}
+class Credito extends Tarjeta{
+    - cuotas: number
 
-
-
-
-enum DiasSemana{
-    LUNES
-    MARTES
-    MIERCOLES
-    JUEVES
-    VIERNES
-    SABADO
-    DOMINGO
+    + obtenerDescuentoSemana(diaActual?: DiaSemana): number
+    + getters y setters ()
 }
+
+class BilleteraVirtual extends MetodoPago{}
 
 
 abstract class Estacion{
     - nombre: String
     - categoria: CategoriaProd
-    - cola: Queue<Producto>
+    - colaProductos: Queue<Producto>
+    - enPreparacion: Producto[]
 
     + puedePreparar(prod: Producto): boolean
     + recibir(prod: Producto): void
     + comenzarSiguiente(): Producto
     + marcarListo(prod: Producto): void
+    + estaEnPreparacion(prod: Producto): boolean
     + obtenerPendientes(): Producto[]
+    + obtenerEnPreparacion(): Producto[]
     + getters y setters ()
 }
 
@@ -199,3 +259,4 @@ note right of Estacion{
     Habria que crear una cola por cada tipo de estado? (LISTO,EN_PREPARACION,PENDIENTE)
 }
 
+@enduml
