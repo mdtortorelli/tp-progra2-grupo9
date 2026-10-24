@@ -6,15 +6,13 @@ import { Efectivo } from "../src/Efectivo";
 import { Credito } from "../src/Credito";
 import { Debito } from "../src/Debito";
 import { BilleteraVirtual } from "../src/BilleteraVirtual";
+import { SUBTOTAL, DESCUENTO_DIA } from "../src/Constantes";
 
 
 class PedidoDePrueba extends Pedido {}
 
 const SABADO = DiaSemana.SABADO;
 const MARTES = DiaSemana.MARTES;
-
-const SUBTOTAL = 1000;
-const DESCUENTO_DIA = 15; // % que se aplica el sábado
 
 function pagar(metodo: MetodoPago, dia?: DiaSemana): number | null {
     const pedido = new PedidoDePrueba({} as Cliente, [], metodo);

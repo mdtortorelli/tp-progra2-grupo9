@@ -1,4 +1,4 @@
-import { describe, test, expect, beforeEach, afterEach} from '@jest/globals';
+import { describe, test, expect, beforeEach, afterEach, it, jest} from '@jest/globals';
 import { Pedido } from '../src/Pedido';
 import { EstadoPedido } from "../src/EstadoPedido";
 import { Cliente } from "../src/Cliente";

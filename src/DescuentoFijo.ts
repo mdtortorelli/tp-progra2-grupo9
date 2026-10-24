@@ -1,19 +1,21 @@
 import { Combo } from "./Combo";
+import { CERO } from "./Constantes";
 import { TipoDescuento } from "./TipoDescuento";
 
 export class DescuentoFijo extends TipoDescuento {
     
     public aplicarDescuento(combo: Combo): number {
         try {        
-            const cero = 0;    
-            const descuento = combo.obtenerPrecio() - this.getDescuento(); 
-            if (descuento <= cero)
+                          
+            const descuento = combo.obtenerPrecioSinDescuento() - this.getDescuento(); 
+            
+            if (descuento <= CERO)
             {
                 throw new Error;
             }
             return descuento;
         } 
-        catch(Error)
+        catch
         {
             throw new Error('El monto a descontar no puede superar el precio')
         }

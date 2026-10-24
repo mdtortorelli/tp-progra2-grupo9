@@ -1,6 +1,5 @@
 import { Tarjeta } from "./Tarjeta";
 
-// const CIEN: number = 100;
 
 export class Debito extends Tarjeta {}
         /*public obtenerDescuentoSemana(diaActual?: DiaSemana): number {
