@@ -1,0 +1,262 @@
+@startuml "TP Restaurante 'Fogón del Barrio' "
+
+class Restaurante{
+    - menu: Menu
+    - pedidosTotales: Pedido[]
+    - estaciones: Estacion[]
+
+    - estaRegistrado(p: Pedido): boolean
+    - tieneEstacion(e: Estacion): boolean
+    + registrarPedido(p: Pedido): void
+    + agregarEstacion(e: Estacion): void
+    + buscarEstacionPara(prod: Producto): Estacion
+    + confirmarPedido(p: Pedido): void
+    + facturarPedido(p: Pedido, m: MetodoPago): void
+    + obtenerPedidosFinalizados(): Pedido[]
+    
+    + getters y setters ()
+}
+
+abstract class Pedido{
+    - cliente:Cliente,
+    - pedidosItems:Item[]
+    - estado:EstadoPedidos
+    - metodoDePago:MetodoPago
+    - historialItems: Item[][]
+    - total: number | null = null
+
+    - guardarHistorial(): void 
+    + agregarItem():void
+    + quitarItem():void
+    + deshacerUltimaModificacion(): void
+    + obtenerEstadosItems():void
+    + confirmar(): void
+
+    + getters y setters ()    
+}
+
+class Salon extends Pedido implements AtencionPedido{
+    - mesa:Mesa
+
+    + eliminarItem(): void
+    + obtenerEstadoPedido(): EstadoPedido
+    + consultarEstadosDeItems(): void
+    + confirmarPedido(): void
+
+    + getters y setters () 
+}
+
+class Retiro extends Pedido implements AtencionPedido{
+    - horarioRetiro:DateTime
+
+    + eliminarItem(): void
+    + obtenerEstadoPedido(): EstadoPedido
+    + consultarEstadosDeItems(): void
+    + confirmarPedido(): void
+
+    + getters y setters () 
+}
+
+class Envio extends Pedido{
+    - direccion:String
+    - costo:number
+
+    - validarDireccion(direccion: string): void 
+    - validarCosto(costo: number): void 
+    
+    + getters y setters () 
+}
+
+enum EstadoProducto{
+    PENDIENTE
+    EN_PREPARACION
+    LISTO
+}
+enum EstadoPedidos{
+    EN_CONSTRUCCION
+    CONFIRMADO
+    ENVIADO
+}
+
+
+class Menu{
+    - categoria: CategoriaMenu
+    - itemsMenu: Item[]
+
+    + agregarItem(item:Item): void
+    + quitarItem(item:Item): void
+    + getters y setters ()
+}
+
+interface Item{
+    + obtenerPrecio():number;
+    + obtenerProductos(): Array<Producto>
+}
+
+class Mesa{
+    - numero: number
+
+    + getters y setters ()
+}
+
+interface AtencionPedido{
+    + eliminarItem(): void
+    + obtenerEstadoPedido(): EstadoPedido
+    + consultarEstadosDeItems(): void
+    + confirmarPedido(): void
+}
+
+class Producto implements Item {
+    - nombre: string
+    - precio: number
+    - descripcion: string
+    - categoria: CategoriaProd
+    - estado: EstadoProducto
+
+    + obtenerPrecio():number;
+    + obtenerProductos(): Array<Producto>
+
+    + getters y setters ()
+}
+
+class Combo implements Item {
+    - productosCombos:Producto[]
+    - precioCombo:number
+    - tipoDescuento:TipoDescuento
+
+    - calcularPrecioCombo():number
+    + agregarProductoCombo(producto:Producto):void
+    + quitarProductoCombo(producto:Producto):void
+    + obtenerPrecioSinDescuento():number
+    
+    + obtenerPrecio():number;
+    + obtenerProductos(): Array<Producto>
+
+    + getters y setters ()    
+}
+
+class TipoDescuento {
+    - descuento: number
+    + obtenerMasBeneficioso(descuento1: number, descuento2: number): number
+    + aplicarDescuento(combo:Combo):number
+
+    + getters y setters ()
+}
+
+class DescuentoFijo implements TipoDescuento {   
+    + aplicarDescuento(combo:Combo):number   
+}
+
+class DescuentoPorcentual implements TipoDescuento {
+    + convertirPorcentajeADecimal():number
+    + aplicarDescuento(combo:Combo):number  
+}
+
+
+class categoriaMenu{
+    - productos:Producto[]
+
+    + obtenerProductos():Producto[]
+    + agregarProductoMenu(producto:Producto):void
+    + quitarProductoMenu(producto:Producto):void
+}
+
+enum CategoriaProd {
+    CARNE,
+    ENSALADA,
+    BEBIDA,
+    POSTRE
+}
+
+enum DiaSemana {
+    LUNES,
+    MARTES,
+    MIERCOLES,
+    JUEVES,
+    VIERNES,
+    SABADO,
+    DOMINGO
+}
+
+abstract class MetodoPago{
+    - diaDescuento: DiaSemana
+    - porcentajeDescuentoSemana: number
+    - descuentoPropio: number
+
+    + obtenerDescuentoSemana():number
+    + obtenerPorcentajeDescuento(diaActual?: DiaSemana):number
+    + realizarPago(p:Pedido, subtotal: number, diaActual?: DiaSemana):void 
+    + getters y setters ()
+}
+
+class Efectivo extends MetodoPago{
+    - descuento:double
+
+    + getDescuento():number
+    + setDescuento(descuento: number): void
+}
+
+abstract class Tarjeta extends MetodoPago{}
+
+class Debito extends Tarjeta{}
+
+class Credito extends Tarjeta{
+    - cuotas: number
+
+    + obtenerDescuentoSemana(diaActual?: DiaSemana): number
+    + getters y setters ()
+}
+
+class BilleteraVirtual extends MetodoPago{}
+
+
+abstract class Estacion{
+    - nombre: String
+    - categoria: CategoriaProd
+    - colaProductos: Queue<Producto>
+    - enPreparacion: Producto[]
+
+    + puedePreparar(prod: Producto): boolean
+    + recibir(prod: Producto): void
+    + comenzarSiguiente(): Producto
+    + marcarListo(prod: Producto): void
+    + estaEnPreparacion(prod: Producto): boolean
+    + obtenerPendientes(): Producto[]
+    + obtenerEnPreparacion(): Producto[]
+    + getters y setters ()
+}
+
+class Parrilla extends Estacion{}
+class CocinaFria extends Estacion{}
+class Barra extends Estacion{}
+class CocinaDulce extends Estacion{}
+
+class ItemPedido {
+    - item: Item
+    - cantidad: number
+    - estado: EstadoItem
+    + iniciar(): void
+    + finalizar(): void
+    + puedeModificarse(): boolean
+}
+
+
+
+Estacion o--  ItemPedido
+Pedido *--  ItemPedido
+Menu *-- categoriaMenu
+Producto *--categoriaProd
+Pedido .r.> Item
+Menu .l.> Item
+Salon *-- Mesa
+Combo *-r-Producto
+Pedido *-- MetodoPago
+Restaurante *--r-- Estacion
+Restaurante *--- Pedido
+
+
+note right of Estacion{
+    Habria que crear una cola por cada tipo de estado? (LISTO,EN_PREPARACION,PENDIENTE)
+}
+
+@enduml
