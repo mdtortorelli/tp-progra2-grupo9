@@ -1,8 +1,7 @@
 import { describe, test, expect, beforeEach, afterEach} from '@jest/globals';
 import {Menu} from '../src/Menu';
-// import { MockProxy, mock } from 'jest-mock-extended';
-import { arrayItemsMock, arrayProductosMock, CategoriaMenuMock, itemMock } from './mocks';
-// import { CategoriaMenu } from '../src/CategoriaMenu';
+
+import { arrayItemsMock, CategoriaMenuMock, itemMock, itemMock1, itemMock2 } from './mocks';
 
 describe(Menu, () => {
     
@@ -13,7 +12,7 @@ describe(Menu, () => {
     }); 
 
     let instance: Menu;
-
+    
     instance = new Menu(CategoriaMenuMock,arrayItemsMock);
 
     test("Debe ser una instancia de la clase Menu", () => {
@@ -49,22 +48,20 @@ describe(Menu, () => {
     });
 
      test("Se agrega un item al array de items del menu tiene que ser el mismo que el mock", () => {
+                
+        instance.agregarItem(itemMock1);
+
         
-        let items = instance.getItemsMenu();
-
-        const agregado = items.push(itemMock);
-
-        expect(agregado).toBe(instance.agregarItem(itemMock));
+        expect(instance.getItemsMenu()).toEqual([itemMock,itemMock1]);
     });
-     /*  
-     test("Se quita un item al array de items del menu tiene que ser el mismo que el mock", () => {
-        
-        let items = instance.getItemsMenu();
+     
+     test("Se quita un item del array de items del menú y ya no se encuentra en la lista", () => {
+        instance.agregarItem(itemMock1);
+        instance.agregarItem(itemMock2);
+    
+        instance.quitarItem(itemMock1); 
 
-        const quitado = items.filter(i => i != itemMock);
-
-        expect(quitado).toBe(instance.getItemsMenu());
+        expect(instance.getItemsMenu()).toEqual([itemMock,itemMock2]);
     });
-    */
-   
+       
 });

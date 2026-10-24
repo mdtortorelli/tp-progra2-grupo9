@@ -1,6 +1,6 @@
 import { describe, test, expect, beforeEach, afterEach} from '@jest/globals';
 import { Combo } from "../src/Combo"
-import { arrayProductosMock, productoMock, TipoDescuentoMock } from "./mocks";
+import { arrayProductosMock, productoMock, DescuentoFijoMock, productoMock1 } from "./mocks";
 //tipoDescuentoFijoMock
 describe(Combo, () => {
     
@@ -11,7 +11,7 @@ describe(Combo, () => {
     }); 
 
     let instance: Combo;
-    instance = new Combo(arrayProductosMock,TipoDescuentoMock);
+    instance = new Combo([productoMock],DescuentoFijoMock);
 
     test("Debe ser una instancia de la clase Combo", () => {
         expect(instance).toBeInstanceOf(Combo);
@@ -21,36 +21,33 @@ describe(Combo, () => {
         
         const productosCombo = instance.getProductosCombo();
 
-        expect(productosCombo).toBe(arrayProductosMock);
+        expect(productosCombo).toEqual([productoMock]);
     });
 
     test("El tipo de descuento tiene que ser el tipo descuento del mock", () => {
         
         const tipoDescuento = instance.getTipoDescuento();
 
-        expect(tipoDescuento).toBe(TipoDescuentoMock);
+        expect(tipoDescuento).toBe(DescuentoFijoMock);
     });
 
      test("Se agrega un Producto al array de Productos del combo tiene que ser el mismo que el mock", () => {
         
-        let productosCombo = instance.getProductosCombo();
+         
+        instance.agregarProductoCombo(productoMock1);
 
-        const agregado = productosCombo.push(productoMock);
-
-        expect(agregado).toBe(instance.agregarProductoCombo(productoMock));
+        expect(instance.getProductosCombo()).toEqual([productoMock,productoMock1]);
     });
     
     test("obtener el precio del combo", () => {
         
         const precio = instance.obtenerPrecio();
-
-        expect(precio).toBe(undefined);
+        expect(precio).toEqual(16900);
     });  
 
     test("obtener el precio sin descuento del combo", () => {
         
         const precio = instance.obtenerPrecioSinDescuento();
-
-        expect(precio).toBe(0);
+        expect(precio).toEqual(17000);
     });  
 });

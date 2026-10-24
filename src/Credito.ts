@@ -1,9 +1,9 @@
+import { CERO, UNA_CUOTA } from "./Constantes";
 import { DiaSemana } from "./DiaSemana";
 // import { Pedido } from "./Pedido";
 import { Tarjeta } from "./Tarjeta";
 
-const UNA_CUOTA: number = 1;
-const CERO: number = 0;
+
 
 export class Credito extends Tarjeta {
     private cuotas: number

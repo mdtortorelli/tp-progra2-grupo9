@@ -1,9 +1,9 @@
+import { CERO, CIEN } from "./Constantes";
 import { DiaSemana } from "./DiaSemana";
 import { Pedido } from "./Pedido";
 import { TipoDescuento } from "./TipoDescuento";
 
-const CERO: number = 0;
-const CIEN: number = 100;
+
 
 export default abstract class MetodoPago {
     //private diaDescuento:DiaSemana[];

@@ -30,9 +30,9 @@ describe("Producto", () => {
   });
 
   test("Getter getCategoria verifica que retorne una instancia de CategoriaProd", () => {
+    const categoriaEsperada = CategoriaProd.CARNE;
     const categoriaGetter = instance.getCategoria();
-
-    expect(categoriaGetter).toBeInstanceOf(CategoriaProd);
+    expect(categoriaEsperada).toBe(categoriaGetter);  
   })
 
   test("Getter getDescripcion verifica que retorne el valor default", () => {
@@ -48,4 +48,59 @@ describe("Producto", () => {
 
     expect(estadoEsperado).toBe(estadoGetter);
   });
-})
+
+   test("El nombre tiene que actualizarse en la instancia", () => {
+      const nombreEsperado = "Milanesa";
+        
+      instance.setNombre(nombreEsperado);
+
+      expect(nombreEsperado).toEqual(instance.getNombre());
+  });
+
+  test("El precio tiene que actualizarse en la instancia", () => {
+      const precioEsperado = 15000;
+        
+      instance.setPrecio(precioEsperado);
+
+      expect(precioEsperado).toEqual(instance.getPrecio());
+  });
+
+  test("La categoría tiene que actualizarse en la instancia", () => {
+      const categoriaEsperada = CategoriaProd.CARNE;
+        
+      instance.setCategoria(categoriaEsperada);
+
+      expect(categoriaEsperada).toEqual(instance.getCategoria());
+  });
+
+  test("El estado tiene que actualizarse en la instancia", () => {
+      const estadoEsperado = EstadoProducto.EN_PREPARAION;
+        
+      instance.setEstado(estadoEsperado);
+
+      expect(estadoEsperado).toEqual(instance.getEstado());
+  });
+
+  test("La descripción tiene que actualizarse en la instancia", () => {
+      const descEsperada = "Suprema";
+        
+      instance.setDescripcion(descEsperada);
+
+      expect(descEsperada).toEqual(instance.getDescripcion());
+  });
+  
+  test("Obtener el precio del producto", () => {
+       const precioEsperado = 7000;
+    const precio = instance.obtenerPrecio();
+
+    expect(precioEsperado).toBe(precio);
+  });
+
+  test("Obtener los productos", () => {
+       
+    const productos = instance.obtenerProductos();
+
+    expect(productos).toEqual([instance]);
+  });
+  
+});
