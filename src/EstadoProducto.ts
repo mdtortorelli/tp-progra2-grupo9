@@ -1,5 +1,5 @@
 export enum EstadoProducto {
     PENDIENTE,
-    EN_PREPARAION,
+    EN_PREPARACION,
     LISTO
 }

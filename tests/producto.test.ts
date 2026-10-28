@@ -74,7 +74,7 @@ describe("Producto", () => {
   });
 
   test("El estado tiene que actualizarse en la instancia", () => {
-      const estadoEsperado = EstadoProducto.EN_PREPARAION;
+      const estadoEsperado = EstadoProducto.EN_PREPARACION;
         
       instance.setEstado(estadoEsperado);
 

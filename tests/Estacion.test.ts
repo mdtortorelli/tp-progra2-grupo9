@@ -60,7 +60,7 @@ describe('Estacion', () => {
     const comenzado = parrilla.comenzarSiguiente();
 
     expect(comenzado).toBe(asado);
-    expect(asado.getEstado()).toBe(EstadoProducto.EN_PREPARAION);
+    expect(asado.getEstado()).toBe(EstadoProducto.EN_PREPARACION);
     expect(parrilla.obtenerPendientes()).toEqual([vacio]);
     expect(parrilla.obtenerEnPreparacion()).toEqual([asado]);
   });
@@ -101,7 +101,7 @@ describe('Estacion', () => {
 
     cocinaDulce.comenzarSiguiente();
 
-    expect(flan.getEstado()).toBe(EstadoProducto.EN_PREPARAION);
+    expect(flan.getEstado()).toBe(EstadoProducto.EN_PREPARACION);
     expect(asado.getEstado()).toBe(EstadoProducto.PENDIENTE);
   });
 });

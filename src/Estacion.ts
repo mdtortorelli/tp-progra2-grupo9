@@ -77,7 +77,7 @@ export abstract class Estacion {
     public comenzarSiguiente(): Producto | undefined {
         const siguiente = this.colaProductos.dequeue()
         if (siguiente !== undefined) {
-            siguiente.setEstado(EstadoProducto.EN_PREPARAION)
+            siguiente.setEstado(EstadoProducto.EN_PREPARACION)
             this.enPreparacion.push(siguiente)
         }
         return siguiente

@@ -4,6 +4,9 @@ import { EstadoPedido } from "../src/EstadoPedido";
 import { Cliente } from "../src/Cliente";
 import { Item } from "../src/Item";
 import MetodoPago from "../src/MetodoPago";
+import { ItemPedido } from '../src/ItemPedido';
+import { itemPedidoMock, itemPedidoMock1, itemPedidoMock2 } from './mocks';
+import { EstadoProducto } from '../src/EstadoProducto';
 
 // Subclase concreta solo para poder testear la clase abstracta
 class PedidoTest extends Pedido {}
@@ -11,18 +14,18 @@ class PedidoTest extends Pedido {}
 describe("Pedido", () => {
     let cliente: Cliente;
     let metodoPago: MetodoPago;
-    let item1: Item;
-    let item2: Item;
-    let item3: Item;
+    let item1: ItemPedido;
+    let item2: ItemPedido;
+    let item3: ItemPedido;
     let pedido: PedidoTest;
 
     beforeEach(() => {
         cliente = { nombre: "Juan" } as unknown as Cliente;
         metodoPago = { tipo: "efectivo" } as unknown as MetodoPago;
         // Objetos distintos: quitarItem compara con ===
-        item1 = { id: 1 } as unknown as Item;
-        item2 = { id: 2 } as unknown as Item;
-        item3 = { id: 3 } as unknown as Item;
+        item1 = itemPedidoMock;
+        item2 = itemPedidoMock1;
+        item3 = itemPedidoMock2;
 
         pedido = new PedidoTest(cliente, [item1], metodoPago);
     });
@@ -159,8 +162,8 @@ describe("Pedido", () => {
             pedido.obtenerEstadosItems();
 
             expect(logSpy).toHaveBeenCalledTimes(2);
-            expect(logSpy).toHaveBeenNthCalledWith(1, "Ítem 1: Estado actual");
-            expect(logSpy).toHaveBeenNthCalledWith(2, "Ítem 2: Estado actual");
+            expect(logSpy).toHaveBeenNthCalledWith(1, `Ítem 1: ${EstadoProducto.EN_PREPARACION}`);
+            expect(logSpy).toHaveBeenNthCalledWith(2, `Ítem 2: ${EstadoProducto.EN_PREPARACION}`);
             logSpy.mockRestore();
         });
     });

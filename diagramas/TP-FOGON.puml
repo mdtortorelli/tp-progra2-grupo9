@@ -19,10 +19,10 @@ class Restaurante{
 
 abstract class Pedido{
     - cliente:Cliente,
-    - pedidosItems:Item[]
+    - pedidosItems:ItemPedido[]
     - estado:EstadoPedidos
     - metodoDePago:MetodoPago
-    - historialItems: Item[][]
+    - historialItems: ItemPedido[][]
     - total: number | null = null
 
     - guardarHistorial(): void 
@@ -234,10 +234,12 @@ class CocinaDulce extends Estacion{}
 class ItemPedido {
     - item: Item
     - cantidad: number
-    - estado: EstadoItem
+    - estado: EstadoProducto
     + iniciar(): void
     + finalizar(): void
     + puedeModificarse(): boolean
+
+    + getters y setters ()
 }
 
 

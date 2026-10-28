@@ -1,21 +1,19 @@
 import { Cliente } from "./Cliente";
+import { CERO, N_UNO } from "./Constantes";
 import { EstadoPedido } from "./EstadoPedido"; 
-import { Item } from "./Item";
+import { ItemPedido } from "./ItemPedido";
 import MetodoPago  from "./MetodoPago";
  
 export abstract class Pedido {
     private cliente: Cliente;
-    private pedidosItems: Item[];
+    private pedidosItems: ItemPedido[];
     private estado: EstadoPedido;
     private metodoDePago: MetodoPago;
-    private historialItems: Item[][];
+    private historialItems: ItemPedido[][];
     private total: number | null = null
-        //momento magic NUMBER
-    private static readonly cantidadABorrar = 1;
-    private static readonly numeroUno = 1;
-    private static readonly indiceInicial =0;
+
  
-    public constructor(cliente: Cliente, pedidosItems: Item[], metodoDePago: MetodoPago) {
+    public constructor(cliente: Cliente, pedidosItems: ItemPedido[], metodoDePago: MetodoPago) {
         this.cliente = cliente;
         this.pedidosItems = pedidosItems;
         this.metodoDePago = metodoDePago;
@@ -34,7 +32,7 @@ export abstract class Pedido {
         this.historialItems.push([...this.pedidosItems]);
     }
  
-    public agregarItem(item: Item): void {
+    public agregarItem(item: ItemPedido): void {
         if (this.estado !== EstadoPedido.EN_CONSTRUCCION) {
             throw new Error("No se pueden agregar ítems. El pedido ya esta confirmado.");
         }
@@ -42,7 +40,7 @@ export abstract class Pedido {
         this.pedidosItems.push(item);
     }
  
-    public quitarItem(item: Item): void {
+    public quitarItem(item: ItemPedido): void {
         if (this.estado !== EstadoPedido.EN_CONSTRUCCION) {
             throw new Error("No se puede eliminar el item. El pedido ya esta confirmado");
         }
@@ -50,7 +48,7 @@ export abstract class Pedido {
 
         for (let i = 0; i < this.pedidosItems.length; i++) {
             if (this.pedidosItems[i] === item) {
-                this.pedidosItems.splice(i, Pedido.cantidadABorrar); 
+                this.pedidosItems.splice(i, N_UNO); 
                 break;
             }
         }
@@ -60,7 +58,7 @@ export abstract class Pedido {
         if (this.estado !== EstadoPedido.EN_CONSTRUCCION) {
             throw new Error("Error , El pedido ya fue confirmado.");
         }
-        if (this.historialItems.length > Pedido.indiceInicial) {
+        if (this.historialItems.length > CERO) {
             const estadoAnterior = this.historialItems.pop();
             if (estadoAnterior) {
                 this.pedidosItems = estadoAnterior;
@@ -72,7 +70,7 @@ export abstract class Pedido {
  
     public obtenerEstadosItems(): void {
         this.pedidosItems.forEach((item, index) => {
-            console.log(`Ítem ${index + Pedido.numeroUno}: Estado actual`);
+            console.log(`Ítem ${index + N_UNO} : ${item.getEstado()}`);
         });
     }
  
@@ -80,7 +78,7 @@ export abstract class Pedido {
         if (this.estado !== EstadoPedido.EN_CONSTRUCCION) {
             throw new Error("El pedido ya fue confirmado.");
         }
-        if (this.pedidosItems.length === Pedido.indiceInicial) {
+        if (this.pedidosItems.length === CERO) {
             throw new Error("No se puede confirmar un pedido sin items.");
         }
         this.estado = EstadoPedido.CONFIRMADO;
@@ -102,7 +100,7 @@ export abstract class Pedido {
         this.estado = nuevoEstado;
     }
  
-    public getItems(): Item[] {
+    public getItems(): ItemPedido[] {
         return this.pedidosItems;
     }
  
