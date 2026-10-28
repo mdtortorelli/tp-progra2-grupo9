@@ -1,32 +1,49 @@
 import { describe, test, expect, beforeEach, afterEach} from '@jest/globals';
 import { Combo } from "../src/Combo"
-import { arrayProductosMock, productoMock, DescuentoFijoMock, productoMock1 } from "./mocks";
+import { Producto } from "../src/Producto";
+import { TipoDescuento } from "../src/TipoDescuento";
+import { productoMock, DescuentoFijoMock, productoMock1 } from "./mocks";
 //tipoDescuentoFijoMock
-describe(Combo, () => {
-    
+
+
+class ComboTest extends Combo {}
+
+
+const crearProductosCombo = (): Producto[] => [productoMock];//({ nombre: "Cliente Test" } as unknown as Producto[]);
+const crearTipoDescuento = (): TipoDescuento => DescuentoFijoMock; //({ descuento: 25 } as unknown as TipoDescuento);
+
+describe("Combo", () => {
+
+    let productosCombo: Producto[];
+    let precioCombo: number;
+    let tipoDescuento: TipoDescuento;
+    let combo: ComboTest;
+
     beforeEach( () => {
-    })
+        productosCombo = crearProductosCombo();
+        precioCombo = 10000;
+        tipoDescuento = crearTipoDescuento();
+        combo = new ComboTest(productosCombo, tipoDescuento);
+  });
 
     afterEach(() => {
     }); 
 
-    let instance: Combo;
-    instance = new Combo([productoMock],DescuentoFijoMock);
-
+   
     test("Debe ser una instancia de la clase Combo", () => {
-        expect(instance).toBeInstanceOf(Combo);
+        expect(combo).toBeInstanceOf(Combo);
     });
 
     test("El array de Productos del combo tiene que ser el mismo que el mock", () => {
         
-        const productosCombo = instance.getProductosCombo();
+        const productosCombo = combo.getProductosCombo();
 
         expect(productosCombo).toEqual([productoMock]);
     });
 
     test("El tipo de descuento tiene que ser el tipo descuento del mock", () => {
         
-        const tipoDescuento = instance.getTipoDescuento();
+        const tipoDescuento = combo.getTipoDescuento();
 
         expect(tipoDescuento).toBe(DescuentoFijoMock);
     });
@@ -34,20 +51,20 @@ describe(Combo, () => {
      test("Se agrega un Producto al array de Productos del combo tiene que ser el mismo que el mock", () => {
         
          
-        instance.agregarProductoCombo(productoMock1);
+        combo.agregarProductoCombo(productoMock1);
 
-        expect(instance.getProductosCombo()).toEqual([productoMock,productoMock1]);
+        expect(combo.getProductosCombo()).toEqual([productoMock,productoMock1]);
     });
     
     test("obtener el precio del combo", () => {
         
-        const precio = instance.obtenerPrecio();
-        expect(precio).toEqual(16900);
+        const precio = combo.obtenerPrecio();
+        expect(precio).toEqual(11900);
     });  
 
     test("obtener el precio sin descuento del combo", () => {
         
-        const precio = instance.obtenerPrecioSinDescuento();
-        expect(precio).toEqual(17000);
+        const precio = combo.obtenerPrecioSinDescuento();
+        expect(precio).toEqual(12000);
     });  
 });
