@@ -1,6 +1,7 @@
 import { Cliente } from "./Cliente";
 import { CERO, N_UNO } from "./Constantes";
 import { EstadoPedido } from "./EstadoPedido"; 
+import { EstadoProducto } from "./EstadoProducto";
 import { ItemPedido } from "./ItemPedido";
 import MetodoPago  from "./MetodoPago";
  
@@ -70,7 +71,9 @@ export abstract class Pedido {
  
     public obtenerEstadosItems(): void {
         this.pedidosItems.forEach((item, index) => {
-            console.log(`Ítem ${index + N_UNO} : ${item.getEstado()}`);
+            const estadoStr = EstadoProducto[item.getEstado()];
+            console.log(`Ítem ${index + N_UNO}: ${estadoStr}`);
+           // console.log(`Ítem ${index + N_UNO}: ${item.getEstado()}`);
         });
     }
  

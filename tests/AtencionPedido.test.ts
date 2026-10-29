@@ -161,9 +161,11 @@ describe("Pedido", () => {
 
             pedido.obtenerEstadosItems();
 
+            const estadoStr = EstadoProducto[EstadoProducto.PENDIENTE];
+      
             expect(logSpy).toHaveBeenCalledTimes(2);
-            expect(logSpy).toHaveBeenNthCalledWith(1, `Ítem 1: ${EstadoProducto.EN_PREPARACION}`);
-            expect(logSpy).toHaveBeenNthCalledWith(2, `Ítem 2: ${EstadoProducto.EN_PREPARACION}`);
+            expect(logSpy).toHaveBeenNthCalledWith(1, `Ítem 1: ${estadoStr}`);
+            expect(logSpy).toHaveBeenNthCalledWith(2, `Ítem 2: ${estadoStr}`);
             logSpy.mockRestore();
         });
     });

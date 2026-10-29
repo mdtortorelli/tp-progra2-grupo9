@@ -207,9 +207,11 @@ describe("Pedido", () => {
 
       pedido.obtenerEstadosItems();
 
+      const estadoStr = EstadoProducto[EstadoProducto.PENDIENTE];
+      
       expect(spy).toHaveBeenCalledTimes(2);
-      expect(spy).toHaveBeenNthCalledWith(1, `Ítem 1: ${EstadoProducto.EN_PREPARACION}`);
-      expect(spy).toHaveBeenNthCalledWith(2, `Ítem 2: ${EstadoProducto.EN_PREPARACION}`);
+      expect(spy).toHaveBeenNthCalledWith(1, `Ítem 1: ${estadoStr}`);
+      expect(spy).toHaveBeenNthCalledWith(2, `Ítem 2: ${estadoStr}`);
       spy.mockRestore();
     });
 
