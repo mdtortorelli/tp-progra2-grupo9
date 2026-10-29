@@ -1,9 +1,11 @@
 import { Pedido } from "../src/Pedido";
 import { Cliente } from "../src/Cliente";
 import { EstadoPedido } from "../src/EstadoPedido";
-import { Item } from "../src/Item";
 import MetodoPago from "../src/MetodoPago";
 import { describe, test, expect, beforeEach, afterEach, it, jest } from '@jest/globals';
+import { ItemPedido } from "../src/ItemPedido";
+import { EstadoProducto } from "../src/EstadoProducto";
+import { itemPedidoMock, itemPedidoMock1 } from "./mocks";
 
 
 class PedidoTest extends Pedido {}
@@ -11,7 +13,7 @@ class PedidoTest extends Pedido {}
 
 const crearCliente = (): Cliente => ({ nombre: "Cliente Test" } as unknown as Cliente);
 const crearMetodoPago = (): MetodoPago => ({ tipo: "efectivo" } as unknown as MetodoPago);
-const crearItem = (nombre = "item"): Item => ({ nombre } as unknown as Item);
+const crearItem = (nombre = "item"): ItemPedido => ({ nombre } as unknown as ItemPedido);
 
 describe("Pedido", () => {
   let cliente: Cliente;
@@ -200,14 +202,16 @@ describe("Pedido", () => {
   describe("obtenerEstadosItems", () => {
     it("imprime una línea por cada ítem, numeradas desde 1", () => {
       const spy = jest.spyOn(console, "log").mockImplementation(() => {});
-      pedido.agregarItem(crearItem("a"));
-      pedido.agregarItem(crearItem("b"));
+      pedido.agregarItem(itemPedidoMock);
+      pedido.agregarItem(itemPedidoMock1);
 
       pedido.obtenerEstadosItems();
 
+      const estadoStr = EstadoProducto[EstadoProducto.PENDIENTE];
+      
       expect(spy).toHaveBeenCalledTimes(2);
-      expect(spy).toHaveBeenNthCalledWith(1, "Ítem 1: Estado actual");
-      expect(spy).toHaveBeenNthCalledWith(2, "Ítem 2: Estado actual");
+      expect(spy).toHaveBeenNthCalledWith(1, `Ítem 1: ${estadoStr}`);
+      expect(spy).toHaveBeenNthCalledWith(2, `Ítem 2: ${estadoStr}`);
       spy.mockRestore();
     });
 

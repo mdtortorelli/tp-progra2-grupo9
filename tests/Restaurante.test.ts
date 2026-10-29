@@ -16,6 +16,7 @@ import { Producto } from '../src/Producto';
 import { Restaurante } from '../src/Restaurante';
 import { Retiro } from '../src/Retiro';
 import { TipoDescuento } from '../src/TipoDescuento';
+import { ItemPedido } from '../src/ItemPedido';
 
 function crearCombo(productos: Producto[], precio: number): Combo {
   const descuento = { aplicarDescuento: () => precio } as unknown as TipoDescuento;
@@ -38,6 +39,9 @@ describe('Restaurante', () => {
   let pedido: Pedido;
   let asado: Producto;
   let flan: Producto;
+  let itemPedidioAsado: ItemPedido;
+  let itemPedidioFlan: ItemPedido;
+
 
   beforeEach(() => {
     parrilla = new Parrilla();
@@ -46,6 +50,8 @@ describe('Restaurante', () => {
     pedido = new Retiro(new Cliente(), efectivo, new Date());
     asado = new Producto('Asado', 9000, CategoriaProd.CARNE);
     flan = new Producto('Flan', 3000, CategoriaProd.POSTRE);
+    itemPedidioAsado = new ItemPedido(asado,1);
+    itemPedidioFlan = new ItemPedido(flan,1);
   });
 
   describe('menu y estaciones', () => {
@@ -106,7 +112,7 @@ describe('Restaurante', () => {
     });
 
     it('no registra un pedido que ya fue confirmado', () => {
-      pedido.agregarItem(asado);
+      pedido.agregarItem(itemPedidioAsado);
       pedido.confirmar();
 
       expect(() => restaurante.registrarPedido(pedido)).toThrow('en construccion');
@@ -119,8 +125,8 @@ describe('Restaurante', () => {
     });
 
     it('confirma el pedido y manda cada producto a su estación', () => {
-      pedido.agregarItem(asado);
-      pedido.agregarItem(flan);
+      pedido.agregarItem(itemPedidioAsado);
+      pedido.agregarItem(itemPedidioFlan);
 
       restaurante.confirmarPedido(pedido);
 
@@ -130,7 +136,7 @@ describe('Restaurante', () => {
     });
 
     it('un combo reparte sus productos entre las estaciones', () => {
-      pedido.agregarItem(crearCombo([asado, flan], 10000));
+      pedido.agregarItem(new ItemPedido(crearCombo([asado, flan], 10000),1));
 
       restaurante.confirmarPedido(pedido);
 
@@ -140,10 +146,12 @@ describe('Restaurante', () => {
 
     it('cada estación recibe los productos en el orden en que llegan los pedidos', () => {
       const vacio = new Producto('Vacio', 8500, CategoriaProd.CARNE);
+      const itemPedidoVacio = new ItemPedido(vacio,1);
+      
       const otroPedido = new Retiro(new Cliente(), efectivo, new Date());
       restaurante.registrarPedido(otroPedido);
-      pedido.agregarItem(asado);
-      otroPedido.agregarItem(vacio);
+      pedido.agregarItem(itemPedidioAsado);
+      otroPedido.agregarItem(itemPedidoVacio);
 
       restaurante.confirmarPedido(pedido);
       restaurante.confirmarPedido(otroPedido);
@@ -152,8 +160,8 @@ describe('Restaurante', () => {
     });
 
     it('no confirma nada si algún producto no tiene estación', () => {
-      pedido.agregarItem(asado);
-      pedido.agregarItem(new Producto('Gaseosa', 1500, CategoriaProd.BEBIDA));
+      pedido.agregarItem(itemPedidioAsado);
+      pedido.agregarItem(new ItemPedido(new Producto('Gaseosa', 1500, CategoriaProd.BEBIDA),1));
 
       expect(() => restaurante.confirmarPedido(pedido)).toThrow('No hay estacion');
       expect(pedido.getEstado()).toBe(EstadoPedido.EN_CONSTRUCCION);
@@ -171,7 +179,7 @@ describe('Restaurante', () => {
     });
 
     it('no confirma dos veces el mismo pedido', () => {
-      pedido.agregarItem(asado);
+      pedido.agregarItem(itemPedidioAsado);
       restaurante.confirmarPedido(pedido);
 
       expect(() => restaurante.confirmarPedido(pedido)).toThrow('ya fue confirmado');
@@ -182,7 +190,7 @@ describe('Restaurante', () => {
   describe('facturarPedido', () => {
     beforeEach(() => {
       restaurante.registrarPedido(pedido);
-      pedido.agregarItem(crearCombo([asado, flan], 10000));
+      pedido.agregarItem(new ItemPedido(crearCombo([asado, flan], 10000),1));
       restaurante.confirmarPedido(pedido);
     });
 

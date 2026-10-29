@@ -13,6 +13,7 @@ import { DiaSemana } from "./DiaSemana";
 import { Efectivo } from "./Efectivo";
 import { Envio } from "./Envio";
 import { EstadoProducto } from "./EstadoProducto";
+import { ItemPedido } from "./ItemPedido";
 import { Menu } from "./Menu";
 import { Mesa } from "./Mesa";
 import { Parrilla } from "./Parrilla";
@@ -63,23 +64,23 @@ console.log("Direccion y costo del envio:", envio.getDireccion(), envio.getCosto
 console.log("Pedidos registrados:", restaurante.getPedidosTotales().length);
 
 console.log("Punto 2: agregar y sacar productos y combos ");
-salon.agregarItem(asado);
-salon.agregarItem(parrillada);
-salon.agregarItem(ensalada);
-salon.agregarItem(flan);
-salon.agregarItem(helado);
+salon.agregarItem(new ItemPedido(asado,1));
+salon.agregarItem(new ItemPedido(parrillada,1));
+salon.agregarItem(new ItemPedido(ensalada,1));
+salon.agregarItem(new ItemPedido(flan,1));
+salon.agregarItem(new ItemPedido(helado,1));
 console.log("Items del salon:", salon.getItems().length);
-salon.quitarItem(helado);
+salon.quitarItem(new ItemPedido(helado,1));
 console.log("Items del salon despues de sacar el helado:", salon.getItems().length);
-envio.agregarItem(agua);
+envio.agregarItem(new ItemPedido(agua,1));
 
 console.log("Punto 3: deshacer la ultima modificacion ");
-retiro.agregarItem(choripan);
-retiro.agregarItem(jugoNaranja);
+retiro.agregarItem(new ItemPedido(choripan,1));
+retiro.agregarItem(new ItemPedido(jugoNaranja,1));
 console.log("Items del retiro con el jugo equivocado:", retiro.getItems().length);
 retiro.deshacerUltimaModificacion();
 console.log("Items del retiro despues de deshacer:", retiro.getItems().length);
-retiro.agregarItem(jugoManzana);
+retiro.agregarItem(new ItemPedido(jugoManzana,1));
 console.log("Items del retiro con el jugo correcto:", retiro.getItems().length);
 
 console.log("Punto 4: confirmar y distribuir a las estaciones ");
@@ -97,7 +98,7 @@ console.log("Estado del asado:", EstadoProducto[asado.getEstado()]);
 
 console.log("Punto 6: no se puede modificar ni cancelar un item en preparacion ");
 try {
-    salon.quitarItem(asado);
+    salon.quitarItem(new ItemPedido(asado,1));
 } catch (error) {
     console.log("Sacar el asado:", error.message);
 }

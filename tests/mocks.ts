@@ -10,6 +10,7 @@ import { Item } from '../src/Item';
 import { CategoriaMenu } from '../src/CategoriaMenu';
 import { DescuentoFijo } from '../src/DescuentoFijo';
 import { DescuentoPorcentual } from '../src/DescuentoPorcentual';
+import { ItemPedido } from '../src/ItemPedido';
 
 export const tipoDescuentoFijoMock: TipoDescuento = {
     aplicarDescuento: function (combo: Combo): number {
@@ -65,7 +66,7 @@ export const productoMock: Producto = {
         return EstadoProducto.PENDIENTE;
     },
     setEstado: function (estado: EstadoProducto): void {
-        jest.fn().mockReturnValue(EstadoProducto.EN_PREPARAION);
+        jest.fn().mockReturnValue(EstadoProducto.EN_PREPARACION);
     }
 } as any;
 
@@ -103,7 +104,7 @@ export const productoMock1: Producto = {
         return EstadoProducto.PENDIENTE;
     },
     setEstado: function (estado: EstadoProducto): void {
-        jest.fn().mockReturnValue(EstadoProducto.EN_PREPARAION);
+        jest.fn().mockReturnValue(EstadoProducto.EN_PREPARACION);
     }
 } as any;
 
@@ -155,4 +156,9 @@ export let arrayItemsMock : MockProxy<Item[]> = [itemMock];
 
 export const comboFijoMock = new Combo([productoMock],DescuentoFijoMock) ;
 export const comboPorcentajeMock = new Combo([productoMock],DescuentoPorcentualMock) ;
+
+export const itemPedidoMock = new ItemPedido(itemMock, 1);
+export const itemPedidoMock1 = new ItemPedido(itemMock1, 1);
+export const itemPedidoMock2 = new ItemPedido(itemMock2, 1);
+
 

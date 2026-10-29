@@ -4,10 +4,11 @@ import { Cliente } from "../src/Cliente";
 import { EstadoPedido } from "../src/EstadoPedido";
 import { Item } from "../src/Item";
 import MetodoPago from "../src/MetodoPago";
+import { ItemPedido } from '../src/ItemPedido';
 
 const crearCliente = (): Cliente => ({ nombre: "Cliente Test" } as unknown as Cliente);
 const crearMetodoPago = (): MetodoPago => ({ tipo: "efectivo" } as unknown as MetodoPago);
-const crearItem = (): Item => ({ nombre: "item" } as unknown as Item);
+const crearItem = (): ItemPedido => ({ nombre: "item" } as unknown as ItemPedido);
 
 describe("Envio", () => {
   let cliente: Cliente;

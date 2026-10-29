@@ -132,10 +132,13 @@ export class Restaurante {
         }
         const productos: Producto[] = [];
         const estacionesAsignadas: Estacion[] = [];
-        for (const item of pedido.getItems()) {
-            for (const producto of item.obtenerProductos()) {
-                productos.push(producto);
-                estacionesAsignadas.push(this.buscarEstacionPara(producto));
+        for (const itemPedido of pedido.getItems()) {
+            for (const producto of itemPedido.getItem().obtenerProductos()) {
+                for (let i = 0; i < itemPedido.getCantidad();i++) {
+                    productos.push(producto);
+                    estacionesAsignadas.push(this.buscarEstacionPara(producto));
+                }
+                
             }
         }
 
@@ -167,13 +170,13 @@ export class Restaurante {
         }
 
         let subtotal = 0;
-        for (const item of pedido.getItems()) {
-            for (const producto of item.obtenerProductos()) {
+        for (const itemPedido of pedido.getItems()) {
+            for (const producto of itemPedido.getItem().obtenerProductos()) {
                 if (producto.getEstado() !== EstadoProducto.LISTO) {
                     throw new Error("No se puede facturar: hay ítems que no están listos");
                 }
             }
-            subtotal += item.obtenerPrecio();
+            subtotal += (itemPedido.getItem().obtenerPrecio()*itemPedido.getCantidad());
         }
 
         pedido.setMetodoDePago(metodoPago);

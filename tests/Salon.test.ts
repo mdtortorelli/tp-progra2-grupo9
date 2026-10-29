@@ -2,14 +2,16 @@ import { describe, expect, beforeEach, afterEach, it, jest } from '@jest/globals
 import { Salon } from "../src/Salon";
 import { Cliente } from "../src/Cliente";
 import { EstadoPedido } from "../src/EstadoPedido";
-import { Item } from "../src/Item";
+import { itemPedidoMock, itemPedidoMock1} from "./mocks";
 import { Mesa } from "../src/Mesa";
 import MetodoPago from "../src/MetodoPago";
+import { ItemPedido } from '../src/ItemPedido';
+import { itemMock, itemMock1 } from './mocks';
 
 const crearCliente = (): Cliente => ({ nombre: "Cliente Test" } as unknown as Cliente);
 const crearMetodoPago = (): MetodoPago => ({ tipo: "efectivo" } as unknown as MetodoPago);
 const crearMesa = (numero = 1): Mesa => ({ numero } as unknown as Mesa);
-const crearItem = (): Item => ({ nombre: "item" } as unknown as Item);
+const crearItem = (): ItemPedido => ({ nombre: "item" } as unknown as ItemPedido);
 
 describe("Salon", () => {
   let mesa: Mesa;
@@ -70,8 +72,8 @@ describe("Salon", () => {
 
   describe("consultarEstadosDeItems", () => {
     it("lista el estado de cada item", () => {
-      salon.agregarItem(crearItem());
-      salon.agregarItem(crearItem());
+      salon.agregarItem(itemPedidoMock);
+      salon.agregarItem(itemPedidoMock1);
 
       // Ejecuta la consulta sin romper la aplicacion
       salon.consultarEstadosDeItems();
