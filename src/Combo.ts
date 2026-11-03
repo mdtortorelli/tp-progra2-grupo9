@@ -87,7 +87,7 @@ export class Combo implements Item {
      * @returns {number} Precio final del combo.
      */
     public obtenerPrecio(): number {    
-        return this.precioCombo;
+        return this.calcularPrecioCombo();
     }
 
     /**
