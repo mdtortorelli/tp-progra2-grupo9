@@ -171,11 +171,11 @@ export class Restaurante {
 
         let subtotal = 0;
         for (const itemPedido of pedido.getItems()) {
-            for (const producto of itemPedido.getItem().obtenerProductos()) {
-                if (producto.getEstado() !== EstadoProducto.LISTO) {
+            //for (const producto of itemPedido.getItem().obtenerProductos()) {
+                if (itemPedido.getEstado() !== EstadoProducto.LISTO) {
                     throw new Error("No se puede facturar: hay ítems que no están listos");
                 }
-            }
+            //}
             subtotal += (itemPedido.getItem().obtenerPrecio()*itemPedido.getCantidad());
         }
 
