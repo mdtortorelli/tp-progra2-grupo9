@@ -245,7 +245,7 @@ class ItemPedido {
 
 
 Estacion o--  ItemPedido
-Pedido *--  ItemPedido
+Pedido *-r-  ItemPedido
 Menu *-- categoriaMenu
 Producto *--categoriaProd
 Pedido .r.> Item
@@ -255,6 +255,7 @@ Combo *-r-Producto
 Pedido *-- MetodoPago
 Restaurante *--r-- Estacion
 Restaurante *--- Pedido
+ItemPedido *-r- Item
 
 
 note right of Estacion{

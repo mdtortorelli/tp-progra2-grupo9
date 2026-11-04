@@ -134,9 +134,10 @@ console.log("Combo parrillada sin descuento:", parrillada.obtenerPrecioSinDescue
 console.log("Combo parrillada con descuento:", parrillada.obtenerPrecio());
 
 console.log("Punto 9: cobrar segun el medio de pago con el mejor descuento ");
-console.log("Salon en efectivo un martes:", restaurante.facturarPedido(salon, efectivo, DiaSemana.MARTES));
-console.log("Retiro con debito un lunes:", restaurante.facturarPedido(retiro, debito, DiaSemana.LUNES));
-console.log("Envio con billetera un miercoles:", restaurante.facturarPedido(envio, billetera, DiaSemana.MIERCOLES));
+salon.obtenerEstadosItems();
+//console.log("Salon en efectivo un martes:", restaurante.facturarPedido(salon, efectivo, DiaSemana.MARTES));
+//console.log("Retiro con debito un lunes:", restaurante.facturarPedido(retiro, debito, DiaSemana.LUNES));
+//console.log("Envio con billetera un miercoles:", restaurante.facturarPedido(envio, billetera, DiaSemana.MIERCOLES));
 
 console.log("Punto 10: historial de pedidos finalizados ");
 for (const pedido of restaurante.obtenerPedidosFinalizados()) {
