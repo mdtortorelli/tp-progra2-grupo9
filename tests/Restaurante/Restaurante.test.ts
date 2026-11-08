@@ -2,6 +2,7 @@ import { describe, test, expect, beforeEach, afterEach, it} from '@jest/globals'
 import { CategoriaMenu } from '../../src/Productos/CategoriaMenu';
 import { CategoriaProd } from '../../src/Productos/CategoriaProd';
 import { Cliente } from '../../src/Restaurante/Cliente';
+import { Barra } from '../../src/Cocina/Barra';
 import { CocinaDulce } from '../../src/Cocina/CocinaDulce';
 import { Combo } from '../../src/Productos/Combo';
 import { DiaSemana } from '../../src/Utils/DiaSemana';
@@ -24,11 +25,21 @@ function crearCombo(productos: Producto[], precio: number): Combo {
 }
 
 function prepararTodo(estacion: Estacion): void {
-  let producto = estacion.comenzarSiguiente();
-  while (producto !== undefined) {
-    estacion.marcarListo(producto);
-    producto = estacion.comenzarSiguiente();
+  let itemCocina = estacion.comenzarSiguiente();
+  while (itemCocina !== undefined) {
+    estacion.marcarListo(itemCocina);
+    itemCocina = estacion.comenzarSiguiente();
   }
+}
+
+function productosPendientes(estacion: Estacion): Producto[] {
+  const productos: Producto[] = [];
+  for (const itemCocina of estacion.obtenerPendientes()) {
+    for (const producto of itemCocina.getItem().obtenerProductos()) {
+      productos.push(producto);
+    }
+  }
+  return productos;
 }
 
 describe('Restaurante', () => {
@@ -46,7 +57,8 @@ describe('Restaurante', () => {
   beforeEach(() => {
     parrilla = new Parrilla();
     cocinaDulce = new CocinaDulce();
-    restaurante = new Restaurante(new Menu(new CategoriaMenu([]), []), [], [parrilla, cocinaDulce]);
+    parrilla.setSiguiente(cocinaDulce);
+    restaurante = new Restaurante(new Menu(new CategoriaMenu([]), []), [], parrilla);
     pedido = new Retiro(new Cliente(), efectivo, new Date());
     asado = new Producto('Asado', 9000, CategoriaProd.CARNE);
     flan = new Producto('Flan', 3000, CategoriaProd.POSTRE);
@@ -60,37 +72,24 @@ describe('Restaurante', () => {
       restaurante.setMenu(otroMenu);
 
       expect(restaurante.getMenu()).toBe(otroMenu);
-      expect(restaurante.getEstaciones()).toEqual([parrilla, cocinaDulce]);
+    });
+
+    it('guarda la estacion por la que entran los productos a la cadena', () => {
+      expect(restaurante.getEstacion()).toBe(parrilla);
     });
 
     it('por defecto arranca sin pedidos ni estaciones', () => {
       const nuevo = new Restaurante(new Menu(new CategoriaMenu([]), []));
 
       expect(nuevo.getPedidosTotales()).toEqual([]);
-      expect(nuevo.getEstaciones()).toEqual([]);
+      expect(nuevo.getEstacion()).toBeUndefined();
     });
 
-    it('agrega una estación nueva', () => {
-      const otra = new Parrilla();
-      restaurante.agregarEstacion(otra);
+    it('se puede cambiar la estacion de entrada de la cadena', () => {
+      const barra = new Barra();
+      restaurante.setEstacion(barra);
 
-      expect(restaurante.getEstaciones()).toContain(otra);
-    });
-
-    it('no agrega una estacion repetida ni vacia', () => {
-      expect(() => restaurante.agregarEstacion(parrilla)).toThrow('ya esta registrada');
-      expect(() => restaurante.agregarEstacion(undefined as unknown as Parrilla)).toThrow('obligatoria');
-    });
-
-    it('busca la estacion que prepara cada producto', () => {
-      expect(restaurante.buscarEstacionPara(asado)).toBe(parrilla);
-      expect(restaurante.buscarEstacionPara(flan)).toBe(cocinaDulce);
-    });
-
-    it('falla si ninguna estación prepara el producto', () => {
-      const gaseosa = new Producto('Gaseosa', 1500, CategoriaProd.BEBIDA);
-
-      expect(() => restaurante.buscarEstacionPara(gaseosa)).toThrow('No hay estacion');
+      expect(restaurante.getEstacion()).toBe(barra);
     });
   });
 
@@ -131,8 +130,8 @@ describe('Restaurante', () => {
       restaurante.confirmarPedido(pedido);
 
       expect(pedido.getEstado()).toBe(EstadoPedido.CONFIRMADO);
-      expect(parrilla.obtenerPendientes()).toEqual([asado]);
-      expect(cocinaDulce.obtenerPendientes()).toEqual([flan]);
+      expect(productosPendientes(parrilla)).toEqual([asado]);
+      expect(productosPendientes(cocinaDulce)).toEqual([flan]);
     });
 
     it('un combo reparte sus productos entre las estaciones', () => {
@@ -140,8 +139,8 @@ describe('Restaurante', () => {
 
       restaurante.confirmarPedido(pedido);
 
-      expect(parrilla.obtenerPendientes()).toEqual([asado]);
-      expect(cocinaDulce.obtenerPendientes()).toEqual([flan]);
+      expect(productosPendientes(parrilla)).toEqual([asado]);
+      expect(productosPendientes(cocinaDulce)).toEqual([flan]);
     });
 
     it('cada estación recibe los productos en el orden en que llegan los pedidos', () => {
@@ -156,16 +155,23 @@ describe('Restaurante', () => {
       restaurante.confirmarPedido(pedido);
       restaurante.confirmarPedido(otroPedido);
 
-      expect(parrilla.obtenerPendientes()).toEqual([asado, vacio]);
+      expect(productosPendientes(parrilla)).toEqual([asado, vacio]);
     });
 
-    it('no confirma nada si algún producto no tiene estación', () => {
-      pedido.agregarItem(itemPedidioAsado);
+    it('lanza error si ninguna estacion puede preparar un producto', () => {
       pedido.agregarItem(new ItemPedido(new Producto('Gaseosa', 1500, CategoriaProd.BEBIDA),1));
 
-      expect(() => restaurante.confirmarPedido(pedido)).toThrow('No hay estacion');
-      expect(pedido.getEstado()).toBe(EstadoPedido.EN_CONSTRUCCION);
-      expect(parrilla.obtenerPendientes()).toEqual([]);
+      expect(() => restaurante.confirmarPedido(pedido)).toThrow('No hay estacion que pueda preparar el item');
+    });
+
+    it('no confirma si el restaurante no tiene estaciones', () => {
+      const sinEstaciones = new Restaurante(new Menu(new CategoriaMenu([]), []));
+      const otro = new Retiro(new Cliente(), efectivo, new Date());
+      sinEstaciones.registrarPedido(otro);
+      otro.agregarItem(itemPedidioAsado);
+
+      expect(() => sinEstaciones.confirmarPedido(otro)).toThrow('No hay estaciones');
+      expect(otro.getEstado()).toBe(EstadoPedido.EN_CONSTRUCCION);
     });
 
     it('no confirma un pedido sin ítems', () => {
@@ -183,7 +189,7 @@ describe('Restaurante', () => {
       restaurante.confirmarPedido(pedido);
 
       expect(() => restaurante.confirmarPedido(pedido)).toThrow('ya fue confirmado');
-      expect(parrilla.obtenerPendientes()).toEqual([asado]);
+      expect(productosPendientes(parrilla)).toEqual([asado]);
     });
   });
 
@@ -194,12 +200,35 @@ describe('Restaurante', () => {
       restaurante.confirmarPedido(pedido);
     });
 
-    it('no factura si hay productos que no están listos', () => {
-      prepararTodo(parrilla);
+    it('el combo se manda a cocina como un item por cada producto', () => {
+      const itemsCocina = restaurante.obtenerItemsEnCocina(pedido);
 
-      expect(asado.getEstado()).toBe(EstadoProducto.LISTO);
-      expect(flan.getEstado()).toBe(EstadoProducto.PENDIENTE);
+      expect(itemsCocina.length).toBe(2);
+      expect(itemsCocina[0].getItem()).toBe(asado);
+      expect(itemsCocina[1].getItem()).toBe(flan);
+    });
+
+    it('no factura si hay items de cocina que no están listos', () => {
+      prepararTodo(parrilla);
+      const itemsCocina = restaurante.obtenerItemsEnCocina(pedido);
+
+      expect(itemsCocina[0].getEstado()).toBe(EstadoProducto.LISTO);
+      expect(itemsCocina[1].getEstado()).toBe(EstadoProducto.PENDIENTE);
       expect(() => restaurante.facturarPedido(pedido, efectivo)).toThrow('no están listos');
+    });
+
+    it('preparar los items no cambia el estado de los productos del menu', () => {
+      prepararTodo(parrilla);
+      prepararTodo(cocinaDulce);
+
+      expect(asado.getEstado()).toBe(EstadoProducto.PENDIENTE);
+      expect(flan.getEstado()).toBe(EstadoProducto.PENDIENTE);
+    });
+
+    it('un pedido sin confirmar no tiene items en cocina', () => {
+      const otro = new Retiro(new Cliente(), efectivo, new Date());
+
+      expect(restaurante.obtenerItemsEnCocina(otro)).toEqual([]);
     });
 
     describe('con todos los productos listos', () => {
