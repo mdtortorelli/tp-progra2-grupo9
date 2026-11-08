@@ -1,0 +1,43 @@
+@startuml 'Aplicar Descuento'
+skinparam style strictuml
+autonumber
+
+actor Usuario
+participant "Sistema / Controlador" as Ctrl
+participant "Pedido" as Pedido
+participant "ItemPedido" as Item
+participant "TipoDescuento" as TipoDesc
+participant "DescuentoFijo\n(o Porcentual)" as Desc
+
+Usuario -> Ctrl: Aplicar descuento al pedido / ítem
+activate Ctrl
+
+Ctrl -> Pedido: obtenerItems()
+activate Pedido
+Pedido --> Ctrl: listaDeItems
+deactivate Pedido
+
+Ctrl -> Item: aplicarDescuento(tipoDescuento)
+activate Item
+
+Item -> TipoDesc ** : crear()
+activate TipoDesc
+TipoDesc --> Item: tipoDescuentoInstanciado
+deactivate TipoDesc
+
+alt Es Descuento Fijo o Porcentual
+    Item -> Desc : calcularMontoDescuento(precioBase)
+    activate Desc
+    Desc --> Item: montoDescontado
+    deactivate Desc
+else Sin Descuento / Nulo
+    Item --> Item: Mantener precio original
+end
+
+Item --> Ctrl: Actualización de precio aplicada
+deactivate Item
+
+Ctrl --> Usuario: Mostrar resumen con descuento aplicado
+deactivate Ctrl
+
+@enduml
