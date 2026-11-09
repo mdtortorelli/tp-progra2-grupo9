@@ -214,7 +214,7 @@ describe('Restaurante', () => {
 
       expect(itemsCocina[0].getEstado()).toBe(EstadoProducto.LISTO);
       expect(itemsCocina[1].getEstado()).toBe(EstadoProducto.PENDIENTE);
-      expect(() => restaurante.facturarPedido(pedido, efectivo)).toThrow('no están listos');
+      expect(() => restaurante.facturarPedido(pedido, efectivo)).toThrow('No se puede facturar: hay items que no estan listos');
     });
 
     it('preparar los items no cambia el estado de los productos del menu', () => {

@@ -41,10 +41,10 @@ const parrilla = new Parrilla();
 const cocinaFria = new CocinaFria();
 const barra = new Barra();
 const cocinaDulce = new CocinaDulce();
-restaurante.agregarEstacion(parrilla);
-restaurante.agregarEstacion(cocinaFria);
-restaurante.agregarEstacion(barra);
-restaurante.agregarEstacion(cocinaDulce);
+restaurante.setEstacion(parrilla);
+restaurante.setEstacion(cocinaFria);
+restaurante.setEstacion(barra);
+restaurante.setEstacion(cocinaDulce);
 
 
 const efectivo = new Efectivo(10, [DiaSemana.MARTES], 20);
@@ -96,27 +96,37 @@ console.log("Punto 5: cada estacion procesa en orden de llegada ");
 parrilla.comenzarSiguiente();
 console.log("Estado del asado:", EstadoProducto[asado.getEstado()]);
 
+const itemAsado = new ItemPedido(asado,1);
+const itemVacio = new ItemPedido(vacio,1);
+const itemEnsalada = new ItemPedido(ensalada,1);
+const itemChoripan = new ItemPedido(choripan,1);
+const itemGaseosa = new ItemPedido(gaseosa,1);
+const itemJugoManzana = new ItemPedido(jugoManzana,1);
+const itemAgua = new ItemPedido(agua,1);
+const itemFlan = new ItemPedido(flan,1);
+
+
 console.log("Punto 6: no se puede modificar ni cancelar un item en preparacion ");
 try {
-    salon.quitarItem(new ItemPedido(asado,1));
+    salon.quitarItem(itemAsado);
 } catch (error) {
     console.log("Sacar el asado:", error.message);
 }
 
-parrilla.marcarListo(asado);
+parrilla.marcarListo(itemAsado);
 console.log("Estado del asado:", EstadoProducto[asado.getEstado()]);
 parrilla.comenzarSiguiente();
-parrilla.marcarListo(vacio);
+parrilla.marcarListo(itemVacio);
 parrilla.comenzarSiguiente();
-parrilla.marcarListo(choripan);
+parrilla.marcarListo(itemChoripan);
 cocinaFria.comenzarSiguiente();
-cocinaFria.marcarListo(ensalada);
+cocinaFria.marcarListo(itemEnsalada);
 barra.comenzarSiguiente();
-barra.marcarListo(gaseosa);
+barra.marcarListo(itemGaseosa);
 barra.comenzarSiguiente();
-barra.marcarListo(jugoManzana);
+barra.marcarListo(itemJugoManzana);
 barra.comenzarSiguiente();
-barra.marcarListo(agua);
+barra.marcarListo(itemAgua);
 console.log("Pendientes en parrilla:", parrilla.obtenerPendientes().length);
 
 console.log("Punto 7: no se factura hasta que todos los items esten listos ");
@@ -126,7 +136,7 @@ try {
     console.log("Facturar el salon:", error.message);
 }
 cocinaDulce.comenzarSiguiente();
-cocinaDulce.marcarListo(flan);
+cocinaDulce.marcarListo(itemFlan);
 
 console.log("Punto 8: precio de productos y combos ");
 console.log("Asado:", asado.obtenerPrecio());
