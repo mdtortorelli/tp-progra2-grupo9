@@ -2,25 +2,27 @@ import { DiaSemana } from "../Utils/DiaSemana";
 import { Estacion } from "../Cocina/Estacion";
 import { EstadoPedido } from "../Pedidos/EstadoPedido";
 import { EstadoProducto } from "../Productos/EstadoProducto";
+import { ItemPedido } from "../Productos/ItemPedido";
 import { Menu } from "../Productos/Menu";
 import MetodoPago from "../MediosDePago/MetodoPago";
 import { Pedido } from "../Pedidos/Pedido";
-import { Producto } from "../Productos/Producto";
 
 export class Restaurante {
     private menu: Menu
     private pedidosTotales: Pedido[]
-    private estaciones: Estacion[]
+    private estacion: Estacion | undefined
+    private itemsEnCocina: Map<Pedido, ItemPedido[]>
 
     /**
      * @param {Menu} menu - Menú del restaurante.
      * @param {Pedido[]} [pedidosTotales=[]] - Pedidos ya registrados.
-     * @param {Estacion[]} [estaciones=[]] - Estaciones de cocina disponibles.
+     * @param {Estacion} [estacion] - Estación por la que entran los ítems a la cadena de estaciones.
      */
-    public constructor(menu: Menu, pedidosTotales: Pedido[] = [], estaciones: Estacion[] = []) {
+    public constructor(menu: Menu, pedidosTotales: Pedido[] = [], estacion?: Estacion) {
         this.menu = menu
         this.pedidosTotales = pedidosTotales
-        this.estaciones = estaciones
+        this.estacion = estacion
+        this.itemsEnCocina = new Map<Pedido, ItemPedido[]>()
     }
 
     /** @returns {Menu} El menú del restaurante. */
@@ -38,9 +40,14 @@ export class Restaurante {
         return this.pedidosTotales
     }
 
-    /** @returns {Estacion[]} Las estaciones de cocina. */
-    public getEstaciones(): Estacion[] {
-        return this.estaciones
+    /** @returns {Estacion | undefined} Estación por la que entran los productos a la cadena. */
+    public getEstacion(): Estacion | undefined {
+        return this.estacion
+    }
+
+    /** @param {Estacion} estacion - Estación por la que van a entrar los productos a la cadena. */
+    public setEstacion(estacion: Estacion): void {
+        this.estacion = estacion
     }
 
     /**
@@ -76,80 +83,50 @@ export class Restaurante {
     }
 
     /**
-     * Agrega una estación de cocina.
-     * @param {Estacion} estacion - Estación a agregar.
-     * @throws {Error} Si la estación falta o ya fue agregada.
-     */
-    public agregarEstacion(estacion: Estacion): void {
-        if (!estacion) {
-            throw new Error("La estacion es obligatoria");
-        }
-        if (this.tieneEstacion(estacion)) {
-            throw new Error("La estacion ya esta registrada y no se puede agregar");
-        }
-        this.estaciones.push(estacion);
-    }
-
-    /**
-     * Indica si una estación ya fue agregada al restaurante.
-     * @param {Estacion} estacion - Estación a buscar.
-     * @returns {boolean} `true` si la estación ya está agregada.
-     */
-    private tieneEstacion(estacion: Estacion): boolean {
-        for (const agregada of this.estaciones) {
-            if (agregada === estacion) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Busca la estación que prepara un producto.
-     * @param {Producto} producto - Producto a preparar.
-     * @returns {Estacion} La primera estación que puede prepararlo.
-     * @throws {Error} Si ninguna estación puede prepararlo.
-     */
-    public buscarEstacionPara(producto: Producto): Estacion {
-        for (const estacion of this.estaciones) {
-            if (estacion.puedePreparar(producto)) {
-                return estacion;
-            }
-        }
-        throw new Error("No hay estacion que pueda preparar este producto");
-    }
-
-    /**
-     * Confirma un pedido y envía cada producto a la estación que lo prepara.
-     * Combos y productos sueltos se tratan igual: cada ítem informa qué productos hay que preparar.
+     * Confirma un pedido y manda a cocina un ítem por cada producto que hay que preparar.
+     * Así un combo se reparte entre las estaciones que preparan cada uno de sus productos.
+     * Cada ítem entra por la estación del restaurante y avanza por la cadena hasta la que puede prepararlo.
      * @param {Pedido} pedido - Pedido en construcción a confirmar.
-     * @throws {Error} Si el pedido no está registrado, no se puede confirmar
-     * o algún producto no tiene estación que lo prepare (en ese caso no se confirma nada).
+     * @throws {Error} Si el pedido no está registrado, no hay estaciones, no se puede confirmar
+     * o algún producto no tiene estación que lo prepare.
      */
     public confirmarPedido(pedido: Pedido): void {
         if (!this.estaRegistrado(pedido)) {
             throw new Error("El pedido no está registrado en el restaurante");
         }
-        const productos: Producto[] = [];
-        const estacionesAsignadas: Estacion[] = [];
-        for (const itemPedido of pedido.getItems()) {
-            for (const producto of itemPedido.getItem().obtenerProductos()) {
-                for (let i = 0; i < itemPedido.getCantidad();i++) {
-                    productos.push(producto);
-                    estacionesAsignadas.push(this.buscarEstacionPara(producto));
-                }
-                
-            }
+        const estacion = this.estacion;
+        if (estacion === undefined) {
+            throw new Error("No hay estaciones en el restaurante");
         }
 
         pedido.confirmar();
-        for (let i = 0; i < productos.length; i++) {
-            estacionesAsignadas[i].recibir(productos[i]);
+        const itemsCocina: ItemPedido[] = [];
+        for (const itemPedido of pedido.getItems()) {
+            for (const producto of itemPedido.getItem().obtenerProductos()) {
+                itemsCocina.push(new ItemPedido(producto, itemPedido.getCantidad()));
+            }
+        }
+        this.itemsEnCocina.set(pedido, itemsCocina);
+        for (const itemCocina of itemsCocina) {
+            estacion.recibir(itemCocina);
         }
     }
 
     /**
-     * Factura un pedido confirmado cuyos productos están todos listos. El medio de pago aplica
+     * Devuelve los ítems que se mandaron a cocina para un pedido confirmado.
+     * @param {Pedido} pedido - Pedido a consultar.
+     * @returns {ItemPedido[]} Los ítems de cocina del pedido, o una lista vacía si todavía no se confirmó.
+     */
+    public obtenerItemsEnCocina(pedido: Pedido): ItemPedido[] {
+        const itemsCocina = this.itemsEnCocina.get(pedido);
+        if (itemsCocina === undefined) {
+            return [];
+        }
+        return itemsCocina;
+    }
+
+    /**
+     * Factura un pedido confirmado cuyos ítems de cocina están todos listos. El medio de pago aplica
      * el descuento más beneficioso (efectivo o día especial) y guarda el total en el pedido.
      * @param {Pedido} pedido - Pedido a facturar.
      * @param {MetodoPago} metodoPago - Medio de pago elegido por el cliente.
@@ -169,14 +146,15 @@ export class Restaurante {
             throw new Error("Solo se pueden facturar pedidos confirmados");
         }
 
+        for (const itemCocina of this.obtenerItemsEnCocina(pedido)) {
+            if (itemCocina.getEstado() !== EstadoProducto.LISTO) {
+                throw new Error("No se puede facturar: hay items que no estan listos");
+            }
+        }
+
         let subtotal = 0;
         for (const itemPedido of pedido.getItems()) {
-            //for (const producto of itemPedido.getItem().obtenerProductos()) {
-                if (itemPedido.getEstado() !== EstadoProducto.LISTO) {
-                    throw new Error("No se puede facturar: hay ítems que no están listos");
-                }
-            //}
-            subtotal += (itemPedido.getItem().obtenerPrecio()*itemPedido.getCantidad());
+            subtotal += itemPedido.getItem().obtenerPrecio() * itemPedido.getCantidad();
         }
 
         pedido.setMetodoDePago(metodoPago);

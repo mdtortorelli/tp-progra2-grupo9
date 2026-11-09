@@ -3,14 +3,15 @@
 class Restaurante{
     - menu: Menu
     - pedidosTotales: Pedido[]
-    - estaciones: Estacion[]
+    - estacion: Estacion
+    - itemsEnCocina: Map<Pedido, ItemPedido[]>
 
     - estaRegistrado(p: Pedido): boolean
-    - tieneEstacion(e: Estacion): boolean
     + registrarPedido(p: Pedido): void
-    + agregarEstacion(e: Estacion): void
-    + buscarEstacionPara(prod: Producto): Estacion
+    + getEstacion(): Estacion
+    + setEstacion(e: Estacion): void
     + confirmarPedido(p: Pedido): void
+    + obtenerItemsEnCocina(p: Pedido): ItemPedido[]
     + facturarPedido(p: Pedido, m: MetodoPago): void
     + obtenerPedidosFinalizados(): Pedido[]
     
@@ -213,16 +214,19 @@ class BilleteraVirtual extends MetodoPago{}
 abstract class Estacion{
     - nombre: String
     - categoria: CategoriaProd
-    - colaProductos: Queue<Producto>
-    - enPreparacion: Producto[]
+    - colaItems: Queue<ItemPedido>
+    - enPreparacion: ItemPedido[]
+    - siguiente: Estacion
 
-    + puedePreparar(prod: Producto): boolean
-    + recibir(prod: Producto): void
-    + comenzarSiguiente(): Producto
-    + marcarListo(prod: Producto): void
-    + estaEnPreparacion(prod: Producto): boolean
-    + obtenerPendientes(): Producto[]
-    + obtenerEnPreparacion(): Producto[]
+    + setSiguiente(e: Estacion): void
+    + getSiguiente(): Estacion
+    + puedePreparar(i: ItemPedido): boolean
+    + recibir(i: ItemPedido): void
+    + comenzarSiguiente(): ItemPedido
+    + marcarListo(i: ItemPedido): void
+    - estaEnPreparacion(i: ItemPedido): boolean
+    + obtenerPendientes(): ItemPedido[]
+    + obtenerEnPreparacion(): ItemPedido[]
     + getters y setters ()
 }
 
@@ -253,7 +257,8 @@ Menu .l.> Item
 Salon *-- Mesa
 Combo *-r-Producto
 Pedido *-- MetodoPago
-Restaurante *--r-- Estacion
+Restaurante -r-> Estacion : estacion
+Estacion --> "0..1" Estacion : siguiente
 Restaurante *--- Pedido
 ItemPedido *-r- Item
 
