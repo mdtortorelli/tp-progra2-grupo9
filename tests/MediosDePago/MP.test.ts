@@ -12,7 +12,7 @@ function crearPedidoMock(): Pedido {
 describe('BilleteraVirtual', () => {
   it('aplica descuento semanal si el día coincide', () => {
     const pedidoMock = crearPedidoMock();
-    const billetera = new BilleteraVirtual([DiaSemana.VIERNES], 25);
+    const billetera = new BilleteraVirtual(25);
 
     billetera.realizarPago(pedidoMock, 1000, DiaSemana.VIERNES);
 
@@ -21,7 +21,7 @@ describe('BilleteraVirtual', () => {
 
   it('no aplica descuento si el día no coincide', () => {
     const pedidoMock = crearPedidoMock();
-    const billetera = new BilleteraVirtual([DiaSemana.VIERNES], 25);
+    const billetera = new BilleteraVirtual(25);
 
     billetera.realizarPago(pedidoMock, 1000, DiaSemana.LUNES);
 
@@ -30,9 +30,9 @@ describe('BilleteraVirtual', () => {
 
   it('no aplica descuento si no se pasa el día actual', () => {
     const pedidoMock = crearPedidoMock();
-    const billetera = new BilleteraVirtual([DiaSemana.VIERNES], 25);
+    const billetera = new BilleteraVirtual(25);
 
-    billetera.realizarPago(pedidoMock, 1000);
+    billetera.realizarPago(pedidoMock, 1000,0);
 
     expect(pedidoMock.setTotal).toHaveBeenCalledWith(1000);
   });

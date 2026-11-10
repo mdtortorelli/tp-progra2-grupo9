@@ -43,7 +43,7 @@ function productosPendientes(estacion: Estacion): Producto[] {
 }
 
 describe('Restaurante', () => {
-  const efectivo = new Efectivo(10, [DiaSemana.MARTES], 20);
+  const efectivo = new Efectivo(10);
   let restaurante: Restaurante;
   let parrilla: Parrilla;
   let cocinaDulce: CocinaDulce;
@@ -59,6 +59,8 @@ describe('Restaurante', () => {
     cocinaDulce = new CocinaDulce();
     parrilla.setSiguiente(cocinaDulce);
     restaurante = new Restaurante(new Menu(new CategoriaMenu([]), []), [], parrilla);
+    restaurante.setPorcentajeDescuentoSemana(20);
+    restaurante.setDiaDescuento([DiaSemana.LUNES]);
     pedido = new Retiro(new Cliente(), efectivo, new Date());
     asado = new Producto('Asado', 9000, CategoriaProd.CARNE);
     flan = new Producto('Flan', 3000, CategoriaProd.POSTRE);
@@ -284,4 +286,40 @@ describe('Restaurante', () => {
       expect(() => restaurante.facturarPedido(enConstruccion, efectivo)).toThrow('confirmados');
     });
   });
+  
+  describe('DescuentoSemanal', () => {
+  it('getDiaDescuento devuelve los días configurados', () => {
+    restaurante.setDiaDescuento([DiaSemana.LUNES, DiaSemana.VIERNES]);
+    expect([DiaSemana.LUNES, DiaSemana.VIERNES]).toEqual(restaurante.getDiaDescuento());
+  });
+
+  it('setDiaDescuento actualiza los días de descuento', () => {
+    
+    restaurante.setDiaDescuento([DiaSemana.MARTES]);
+    expect([DiaSemana.MARTES]).toEqual(restaurante.getDiaDescuento());
+  });
+
+  it('getPorcentajeDescuentoSemana devuelve el porcentaje configurado', () => {
+    restaurante.setPorcentajeDescuentoSemana(15);
+    expect(15).toBe(restaurante.getPorcentajeDescuentoSemana());
+  });
+
+  it('setPorcentajeDescuentoSemana actualiza el porcentaje', () => {
+    restaurante.setPorcentajeDescuentoSemana(30);
+    expect(30).toBe(restaurante.getPorcentajeDescuentoSemana());
+  });
+
+  it('obtenerDescuentoSemana devuelve el porcentaje si el día coincide', () => {
+    expect(20).toBe(restaurante.obtenerDescuentoSemana(DiaSemana.MIERCOLES));
+  });
+
+  it('obtenerDescuentoSemana devuelve 0 si el día no coincide', () => {
+    expect(0).toBe(restaurante.obtenerDescuentoSemana(DiaSemana.JUEVES));
+  });
+
+  it('obtenerDescuentoSemana devuelve 0 si no se pasa el día', () => {
+    expect(restaurante.obtenerDescuentoSemana()).toBe(0);
+  });
+
+});
 });

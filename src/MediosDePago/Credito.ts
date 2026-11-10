@@ -1,5 +1,4 @@
 import { CERO, UNA_CUOTA } from "../Utils/Constantes";
-import { DiaSemana } from "../Utils/DiaSemana";
 import { Tarjeta } from "./Tarjeta";
 
 /**
@@ -18,12 +17,11 @@ export class Credito extends Tarjeta {
      * Crea una instancia de un método de pago con tarjeta de crédito.
      * 
      * @constructor
-     * @param {DiaSemana[]} diaSemana - Lista de días de la semana en los que aplica el descuento base.
      * @param {number} cuotas - Cantidad de cuotas para diferir el pago.
-     * @param {number} porcentajeDescuentoSemana - Porcentaje de descuento aplicable durante los días especificados.
+     * @param {number} descuentoPropio - Porcentaje de descuento aplicable.
      */
-    public constructor(diaSemana: DiaSemana[], cuotas: number, porcentajeDescuentoSemana: number) {
-        super(diaSemana, porcentajeDescuentoSemana);
+    public constructor(descuentoPropio: number, cuotas: number) {
+        super(descuentoPropio);
         this.cuotas = cuotas;
     }
 
@@ -54,11 +52,11 @@ export class Credito extends Tarjeta {
      * @param {DiaSemana} [diaActual] - Día actual opcional para evaluar si corresponde el beneficio.
      * @returns {number} El porcentaje de descuento final a aplicar.
      */
-    public obtenerDescuentoSemana(diaActual?: DiaSemana): number {        
+    public obtenerDescuento(): number {        
         if (this.cuotas > UNA_CUOTA) {
             return CERO; // Mas de una cuota a pagar = 0% de descuento.
         }
-        return super.obtenerDescuentoSemana(diaActual);
+        return super.getDescuentoPropio();
     }
 
      

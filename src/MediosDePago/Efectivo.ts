@@ -1,4 +1,3 @@
-import { DiaSemana } from "../Utils/DiaSemana";
 import MetodoPago from "./MetodoPago";
 
 /**
@@ -19,13 +18,8 @@ export class Efectivo extends MetodoPago {
      * @param {DiaSemana[]} diaSemana - Lista de días de la semana en los que aplica el descuento semanal.
      * @param {number} porcentajeDescuentoSemana - Porcentaje de descuento aplicable durante los días especificados.
      */
-    public constructor(
-        descuento: number,
-        diaSemana: DiaSemana[],
-        porcentajeDescuentoSemana: number
-    ) {
-        super(diaSemana, porcentajeDescuentoSemana);
-        this.setDescuentoPropio(descuento);
+    public constructor(descuento: number) {
+        super(descuento);
     }
 
     /**

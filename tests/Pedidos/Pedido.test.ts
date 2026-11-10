@@ -248,4 +248,5 @@ describe("Pedido", () => {
       expect(() => pedido.confirmar()).toThrow("El pedido ya fue confirmado.");
     });
   });
+  
 });

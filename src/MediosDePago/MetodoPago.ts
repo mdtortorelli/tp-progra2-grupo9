@@ -1,5 +1,4 @@
 import { CERO, CIEN } from "../Utils/Constantes";
-import { DiaSemana } from "../Utils/DiaSemana";
 import { Pedido } from "../Pedidos/Pedido";
 import { TipoDescuento } from "../Beneficios/TipoDescuento";
 
@@ -11,62 +10,16 @@ import { TipoDescuento } from "../Beneficios/TipoDescuento";
  * @class MetodoPago
  */
 export default abstract class MetodoPago {
-    /** Porcentaje de descuento aplicable durante los días de descuento específicos. */
-    private porcentajeDescuentoSemana: number;
-
+    
     /** Descuento propio asociado directamente al método de pago (por defecto {@link CERO}). */
     private descuentoPropio: number = CERO;
 
     /**
-     * Crea una instancia de un método de pago.
-     * 
-     * @constructor
-     * @param {DiaSemana[]} diaDescuento - Arreglo de días de la semana en los que aplica el descuento semanal.
-     * @param {number} porcentajeDescuentoSemana - El porcentaje de descuento aplicable en dichos días.
-     */
-    public constructor(
-        private diaDescuento: DiaSemana[],
-        porcentajeDescuentoSemana: number
-    ) {
-        this.porcentajeDescuentoSemana = porcentajeDescuentoSemana;
-    }
-
-    /**
-     * Obtiene los días de la semana configurados para aplicar descuentos.
-     * 
-     * @returns {DiaSemana[]} Un arreglo con los días de descuento.
-     */
-    public getDiaDescuento(): DiaSemana[] {
-        return this.diaDescuento;
-    }
-
-    /**
-     * Establece o modifica los días de la semana configurados para los descuentos.
-     * 
-     * @param {DiaSemana[]} descuento - El nuevo arreglo de días de descuento a asignar.
-     * @returns {void}
-     */
-    public setDiaDescuento(descuento: DiaSemana[]): void {
-        this.diaDescuento = descuento;
-    }
-
-    /**
-     * Obtiene el porcentaje de descuento asignado para los días de descuento semanal.
-     * 
-     * @returns {number} El porcentaje de descuento semanal.
-     */
-    public getPorcentajeDescuentoSemana(): number {
-        return this.porcentajeDescuentoSemana;
-    }
-
-    /**
-     * Establece o modifica el porcentaje de descuento semanal.
-     * 
-     * @param {number} porcentajeDescuentoSemana - El nuevo porcentaje a asignar.
-     * @returns {void}
-     */
-    public setPorcentajeDescuentoSemana(porcentajeDescuentoSemana: number): void {
-        this.porcentajeDescuentoSemana = porcentajeDescuentoSemana;
+    * @param {number} descuentoPropio - Descuento propio del metodo de pago.
+    */
+    public constructor(descuentoPropio?: number)
+    {
+        this.descuentoPropio = descuentoPropio ?? CERO;
     }
 
     /**
@@ -88,29 +41,16 @@ export default abstract class MetodoPago {
         this.descuentoPropio = descuentoPropio;
     }
 
-    /**
-     * Calcula el porcentaje de descuento semanal evaluando si el día actual 
-     * se encuentra dentro de los días configurados con beneficio.
-     * 
-     * @param {DiaSemana} [diaActual] - Día actual opcional a verificar.
-     * @returns {number} El porcentaje de descuento si aplica, o {@link CERO} en caso contrario.
-     */
-    public obtenerDescuentoSemana(diaActual?: DiaSemana): number {
-        if (diaActual !== undefined && this.diaDescuento.includes(diaActual)) {
-            return this.porcentajeDescuentoSemana;
-        }
-        return CERO;
-    }
-
+    
     /**
      * Obtiene el porcentaje de descuento más beneficioso comparando el descuento propio 
      * frente al descuento semanal correspondiente al día actual.
      * 
-     * @param {DiaSemana} [diaActual] - Día actual opcional para el cálculo.
+     * @param {number} [descuentoSemanal] - Día actual opcional para el cálculo.
      * @returns {number} El porcentaje de descuento óptimo a aplicar.
      */
-    public obtenerPorcentajeDescuento(diaActual?: DiaSemana): number {
-        return TipoDescuento.obtenerMasBeneficioso(this.getDescuentoPropio(), this.obtenerDescuentoSemana(diaActual));
+    public obtenerPorcentajeDescuento(descuentoSemanal: number): number {
+        return TipoDescuento.obtenerMasBeneficioso(this.getDescuentoPropio(), descuentoSemanal);
     }
 
     /**
@@ -122,10 +62,11 @@ export default abstract class MetodoPago {
      * @param {DiaSemana} [diaActual] - Día actual opcional para evaluar los beneficios de descuento.
      * @returns {void}
      */
-    public realizarPago(pedido: Pedido, subtotal: number, diaActual?: DiaSemana): void {
-        const porcentaje = this.obtenerPorcentajeDescuento(diaActual);
+    public realizarPago(pedido: Pedido, subtotal: number, descuentoSemanal: number): void {
+        const porcentaje = this.obtenerPorcentajeDescuento(descuentoSemanal);
         const descuento = (subtotal * porcentaje) / CIEN;
         const total = subtotal - descuento;
         pedido.setTotal(total);
+        pedido.setDescuentoAplicado(porcentaje);
     }
 }

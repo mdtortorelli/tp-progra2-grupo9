@@ -32,6 +32,9 @@ export abstract class Pedido {
     /** Monto total calculado del pedido (puede ser nulo inicialmente). */
     private total: number | null = null;
 
+    /** Descuento aplicado al pedido. */
+    private descuentoAplicado: number = CERO;
+
     /**
      * Crea una instancia de un pedido, inicializando su estado en construcción ({@link EstadoPedido.EN_CONSTRUCCION}) 
      * y preparando las estructuras para el historial de modificaciones.
@@ -68,6 +71,25 @@ export abstract class Pedido {
         this.total = total;
     }
  
+     /**
+     * Obtiene el descuento del pedido.
+     * 
+     * @returns {number } El descuento aplicado al pedido.
+     */
+    public getDescuentoAplicado(): number {
+        return this.descuentoAplicado;
+    }
+
+    /**
+     * Establece o modifica el descuento del pedido.
+     * 
+     * @param {number} descuentoAplicado - El valor del descuento a aplicar.
+     * @returns {void}
+     */
+    public setDescuentoAplicado(descuento: number): void {
+        this.descuentoAplicado = descuento;
+    }
+
     /**
      * Guarda una copia del estado actual de los ítems en el historial 
      * antes de realizar cualquier modificación.

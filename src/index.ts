@@ -47,9 +47,9 @@ restaurante.setEstacion(barra);
 restaurante.setEstacion(cocinaDulce);
 
 
-const efectivo = new Efectivo(10, [DiaSemana.MARTES], 20);
-const debito = new Debito([DiaSemana.MARTES], 15);
-const billetera = new BilleteraVirtual([DiaSemana.MIERCOLES], 5);
+const efectivo = new Efectivo(20);
+const debito = new Debito(15);
+const billetera = new BilleteraVirtual(5);
 
 console.log("Punto 1: registrar un pedido en cada modalidad ");
 const salon = new Salon(new Cliente(), efectivo, new Mesa(5));
@@ -84,6 +84,7 @@ retiro.agregarItem(new ItemPedido(jugoManzana,1));
 console.log("Items del retiro con el jugo correcto:", retiro.getItems().length);
 
 console.log("Punto 4: confirmar y distribuir a las estaciones ");
+
 restaurante.confirmarPedido(salon);
 restaurante.confirmarPedido(retiro);
 restaurante.confirmarPedido(envio);
