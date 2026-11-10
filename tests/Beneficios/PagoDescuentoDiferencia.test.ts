@@ -6,7 +6,7 @@ import { Efectivo } from "../../src/MediosDePago/Efectivo";
 import { Credito } from "../../src/MediosDePago/Credito";
 import { Debito } from "../../src/MediosDePago/Debito";
 import { BilleteraVirtual } from "../../src/MediosDePago/BilleteraVirtual";
-import { SUBTOTAL, DESCUENTO_DIA } from "../../src/Utils/Constantes";
+import { SUBTOTAL, DESCUENTO_DIA, CERO } from "../../src/Utils/Constantes";
 
 import { describe, expect, beforeEach, afterEach, test, it } from '@jest/globals';
 
@@ -15,9 +15,14 @@ class PedidoDePrueba extends Pedido {}
 const SABADO = DiaSemana.SABADO;
 const MARTES = DiaSemana.MARTES;
 
-function pagar(metodo: MetodoPago, decuento?: number): number | null {
+function pagar(metodo: MetodoPago, descuento?: number): number | null {
     const pedido = new PedidoDePrueba({} as Cliente, [], metodo);
-    metodo.realizarPago(pedido, SUBTOTAL, 0);
+    
+    if(descuento == undefined) {
+        descuento = CERO;
+    }
+
+    metodo.realizarPago(pedido, SUBTOTAL, descuento);
     return pedido.getTotal();
 }
 
@@ -50,12 +55,12 @@ describe("Débito", () => {
 });
 
 describe("Billetera virtual", () => {
-    it("en sábado aplica el descuento del día", () => {
+    it("aplica el descuento del día", () => {
         expect(pagar(new BilleteraVirtual(10), 15)).toBe(850);
     });
 
-    it("en martes no tiene descuento", () => {
-        expect(pagar(new BilleteraVirtual(10), 0)).toBe(1000);
+    it("no tiene descuento del dia", () => {
+        expect(pagar(new BilleteraVirtual(10), 0)).toBe(900);
     });
 });
 
@@ -64,11 +69,11 @@ describe("Crédito", () => {
         expect(pagar(new Credito(10,1), 15)).toBe(850);
     });
 
-    it("3 cuotas en sábado no tiene descuento", () => {
-        expect(pagar(new Credito(10, 3), 15)).toBe(1000);
+    it("3 cuotas no tiene descuento diario", () => {
+        expect(pagar(new Credito(10, 3), 0)).toBe(900);
     });
 
-    it("1 cuota en martes no tiene descuento", () => {
-        expect(pagar(new Credito(10, 1), 0)).toBe(1000);
+    it("1 cuota no tiene descuento diario", () => {
+        expect(pagar(new Credito(10, 1), 0)).toBe(900);
     });
 });

@@ -6,6 +6,7 @@ function crearPedidoMock(): Pedido {
   return {
     setTotal: jest.fn(),
     getTotal: jest.fn(),
+    setDescuentoAplicado: jest.fn(),
   } as unknown as Pedido;
 }
 

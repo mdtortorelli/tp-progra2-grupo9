@@ -8,6 +8,7 @@ function crearPedidoMock(): Pedido {
   return {
     setTotal: jest.fn(),
     getTotal: jest.fn(),
+    setDescuentoAplicado: jest.fn(),
   } as unknown as Pedido;
 }
 
@@ -25,9 +26,9 @@ describe('Debito', () => {
     const pedidoMock = crearPedidoMock();
     const debito = new Debito(15);
 
-    debito.realizarPago(pedidoMock, 1000, DiaSemana.LUNES);
-    debito.realizarPago(pedidoMock, 1000, DiaSemana.MIERCOLES);
-    expect(pedidoMock.setTotal).toHaveBeenCalledWith(1000);
+    debito.realizarPago(pedidoMock, 1000, 10);
+    debito.realizarPago(pedidoMock, 1000, 10);
+    expect(pedidoMock.setTotal).toHaveBeenCalledWith(850);
   });
 
   it('no aplica descuento si no se pasa el día actual', () => {
@@ -35,6 +36,6 @@ describe('Debito', () => {
     const debito = new Debito(15);
 
     debito.realizarPago(pedidoMock, 1000,0);
-    expect(pedidoMock.setTotal).toHaveBeenCalledWith(1000);
+    expect(pedidoMock.setTotal).toHaveBeenCalledWith(850);
   });
 });

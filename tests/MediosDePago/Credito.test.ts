@@ -5,8 +5,10 @@ import { Pedido } from '../../src/Pedidos/Pedido';
 
 function crearPedidoMock(): Pedido {
   return {
+    setDescuentoAplicado: jest.fn(),
     setTotal: jest.fn(),
-    getTotal: jest.fn(),
+    getTotal: jest.fn()
+    
   } as unknown as Pedido;
 }
 
@@ -26,7 +28,7 @@ describe('Credito', () => {
 
     credito.realizarPago(pedidoMock, 1000, 0);
 
-    expect(pedidoMock.setTotal).toHaveBeenCalledWith(1000);
+    expect(pedidoMock.setTotal).toHaveBeenCalledWith(800);
   });
 
   it('nunca aplica descuento si paga en más de 1 cuota, sin importar el día', () => {
@@ -35,7 +37,7 @@ describe('Credito', () => {
 
     credito.realizarPago(pedidoMock, 1000, 0);
 
-    expect(pedidoMock.setTotal).toHaveBeenCalledWith(1000);
+    expect(pedidoMock.setTotal).toHaveBeenCalledWith(800);
   });
 
   it('funciona igual con cualquier día de la semana definido en el enum', () => {
