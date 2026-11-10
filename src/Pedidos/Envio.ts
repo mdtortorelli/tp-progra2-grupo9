@@ -40,6 +40,7 @@ export class Envio extends Pedido {
         Envio.validarCosto(costo);
         this.direccion = direccion;
         this.costo = costo;
+        this.setTotal(this.costo);
     }
 
     /**
@@ -110,5 +111,10 @@ export class Envio extends Pedido {
     public setCosto(costo: number): void {
         Envio.validarCosto(costo);
         this.costo = costo;
+    }
+    
+    public setTotal(total: number): void {
+        const totalConEnvio = total + this.getCosto();
+        super.setTotal(totalConEnvio);
     }
 }

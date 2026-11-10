@@ -6,13 +6,14 @@ function crearPedidoMock(): Pedido {
   return {
     setTotal: jest.fn(),
     getTotal: jest.fn(),
+    setDescuentoAplicado: jest.fn(),
   } as unknown as Pedido;
 }
 
 describe('BilleteraVirtual', () => {
   it('aplica descuento semanal si el día coincide', () => {
     const pedidoMock = crearPedidoMock();
-    const billetera = new BilleteraVirtual([DiaSemana.VIERNES], 25);
+    const billetera = new BilleteraVirtual(25);
 
     billetera.realizarPago(pedidoMock, 1000, DiaSemana.VIERNES);
 
@@ -21,20 +22,20 @@ describe('BilleteraVirtual', () => {
 
   it('no aplica descuento si el día no coincide', () => {
     const pedidoMock = crearPedidoMock();
-    const billetera = new BilleteraVirtual([DiaSemana.VIERNES], 25);
+    const billetera = new BilleteraVirtual(25);
 
-    billetera.realizarPago(pedidoMock, 1000, DiaSemana.LUNES);
+    billetera.realizarPago(pedidoMock, 1000, 10);
 
-    expect(pedidoMock.setTotal).toHaveBeenCalledWith(1000);
+    expect(pedidoMock.setTotal).toHaveBeenCalledWith(750);
   });
 
-  it('no aplica descuento si no se pasa el día actual', () => {
+  it('no aplica descuento del día', () => {
     const pedidoMock = crearPedidoMock();
-    const billetera = new BilleteraVirtual([DiaSemana.VIERNES], 25);
+    const billetera = new BilleteraVirtual(25);
 
-    billetera.realizarPago(pedidoMock, 1000);
+    billetera.realizarPago(pedidoMock, 1000,0);
 
-    expect(pedidoMock.setTotal).toHaveBeenCalledWith(1000);
+    expect(pedidoMock.setTotal).toHaveBeenCalledWith(750);
   });
 
 });

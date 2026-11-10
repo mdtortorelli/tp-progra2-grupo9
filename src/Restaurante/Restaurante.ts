@@ -6,12 +6,15 @@ import { ItemPedido } from "../Productos/ItemPedido";
 import { Menu } from "../Productos/Menu";
 import MetodoPago from "../MediosDePago/MetodoPago";
 import { Pedido } from "../Pedidos/Pedido";
+import { CERO } from "../Utils/Constantes";
 
 export class Restaurante {
     private menu: Menu
     private pedidosTotales: Pedido[]
     private estacion: Estacion | undefined
     private itemsEnCocina: Map<Pedido, ItemPedido[]>
+    private porcentajeDescuentoSemana: number = CERO
+    private diaDescuento: DiaSemana[] | undefined
 
     /**
      * @param {Menu} menu - Menú del restaurante.
@@ -49,6 +52,45 @@ export class Restaurante {
     public setEstacion(estacion: Estacion): void {
         this.estacion = estacion
     }
+
+  /**
+     * Obtiene los días de la semana configurados para aplicar descuentos.
+     * 
+     * @returns {DiaSemana[]} Un arreglo con los días de descuento.
+     */
+    public getDiaDescuento(): DiaSemana[] | undefined {
+        return this.diaDescuento;
+    }
+
+    /**
+     * Establece o modifica los días de la semana configurados para los descuentos.
+     * 
+     * @param {DiaSemana[]} descuento - El nuevo arreglo de días de descuento a asignar.
+     * @returns {void}
+     */
+    public setDiaDescuento(descuento: DiaSemana[]): void {
+        this.diaDescuento = descuento;
+    }
+
+    /**
+     * Obtiene el porcentaje de descuento asignado para los días de descuento semanal.
+     * 
+     * @returns {number} El porcentaje de descuento semanal.
+     */
+    public getPorcentajeDescuentoSemana(): number {
+        return this.porcentajeDescuentoSemana;
+    }
+
+    /**
+     * Establece o modifica el porcentaje de descuento semanal.
+     * 
+     * @param {number} porcentajeDescuentoSemana - El nuevo porcentaje a asignar.
+     * @returns {void}
+     */
+    public setPorcentajeDescuentoSemana(porcentajeDescuentoSemana: number): void {
+        this.porcentajeDescuentoSemana = porcentajeDescuentoSemana;
+    }
+
 
     /**
      * Registra un pedido nuevo (de cualquier modalidad).
@@ -102,9 +144,10 @@ export class Restaurante {
         pedido.confirmar();
         const itemsCocina: ItemPedido[] = [];
         for (const itemPedido of pedido.getItems()) {
-            for (const producto of itemPedido.getItem().obtenerProductos()) {
+            itemsCocina.push(itemPedido);
+            /*for (const producto of itemPedido.getItem().obtenerProductos()) {
                 itemsCocina.push(new ItemPedido(producto, itemPedido.getCantidad()));
-            }
+            }*/
         }
         this.itemsEnCocina.set(pedido, itemsCocina);
         for (const itemCocina of itemsCocina) {
@@ -158,7 +201,7 @@ export class Restaurante {
         }
 
         pedido.setMetodoDePago(metodoPago);
-        metodoPago.realizarPago(pedido, subtotal, diaActual);
+        metodoPago.realizarPago(pedido, subtotal, this.obtenerDescuentoSemana(diaActual));
         pedido.setEstado(EstadoPedido.ENVIADO);
 
         return pedido.getTotal() as number;
@@ -174,4 +217,19 @@ export class Restaurante {
         }
         return finalizados;
     }
+
+    /**
+         * Calcula el porcentaje de descuento semanal evaluando si el día actual 
+         * se encuentra dentro de los días configurados con beneficio.
+         * 
+         * @param {DiaSemana} [diaActual] - Día actual opcional a verificar.
+         * @returns {number} El porcentaje de descuento si aplica, o {@link CERO} en caso contrario.
+         */
+        public obtenerDescuentoSemana(diaActual?: DiaSemana): number {
+            if (diaActual !== undefined && this.diaDescuento !== undefined && this.diaDescuento.includes(diaActual)) {
+                return this.porcentajeDescuentoSemana;
+            }
+            return CERO;
+        }
+    
 }

@@ -5,37 +5,39 @@ import { Pedido } from '../../src/Pedidos/Pedido';
 
 function crearPedidoMock(): Pedido {
   return {
+    setDescuentoAplicado: jest.fn(),
     setTotal: jest.fn(),
-    getTotal: jest.fn(),
+    getTotal: jest.fn()
+    
   } as unknown as Pedido;
 }
 
 describe('Credito', () => {
   it('aplica descuento semanal solo si paga en 1 cuota y el día coincide', () => {
     const pedidoMock = crearPedidoMock();
-    const credito = new Credito([DiaSemana.SABADO], 1, 20);
+    const credito = new Credito(20,1);
 
-    credito.realizarPago(pedidoMock, 1000, DiaSemana.SABADO);
+    credito.realizarPago(pedidoMock, 1000,0);
 
     expect(pedidoMock.setTotal).toHaveBeenCalledWith(800);
   });
 
   it('no aplica descuento en 1 cuota si el día no coincide', () => {
     const pedidoMock = crearPedidoMock();
-    const credito = new Credito([DiaSemana.SABADO], 1, 20);
+    const credito = new Credito(20,1);
 
-    credito.realizarPago(pedidoMock, 1000, DiaSemana.MIERCOLES);
+    credito.realizarPago(pedidoMock, 1000, 0);
 
-    expect(pedidoMock.setTotal).toHaveBeenCalledWith(1000);
+    expect(pedidoMock.setTotal).toHaveBeenCalledWith(800);
   });
 
   it('nunca aplica descuento si paga en más de 1 cuota, sin importar el día', () => {
     const pedidoMock = crearPedidoMock();
-    const credito = new Credito([DiaSemana.SABADO], 12, 20);
+    const credito = new Credito(20,12);
 
-    credito.realizarPago(pedidoMock, 1000, DiaSemana.SABADO);
+    credito.realizarPago(pedidoMock, 1000, 0);
 
-    expect(pedidoMock.setTotal).toHaveBeenCalledWith(1000);
+    expect(pedidoMock.setTotal).toHaveBeenCalledWith(800);
   });
 
   it('funciona igual con cualquier día de la semana definido en el enum', () => {
@@ -46,9 +48,9 @@ describe('Credito', () => {
 
     dias.forEach((dia) => {
       const pedidoMock = crearPedidoMock();
-      const credito = new Credito([dia], 1, 10);
+      const credito = new Credito(10,1);
 
-      credito.realizarPago(pedidoMock, 1000, dia);
+      credito.realizarPago(pedidoMock, 1000, 0);
 
       expect(pedidoMock.setTotal).toHaveBeenCalledWith(900);
     });

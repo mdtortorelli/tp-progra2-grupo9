@@ -1,4 +1,3 @@
-import { DiaSemana } from "../Utils/DiaSemana";
 import MetodoPago from "./MetodoPago";
 
 /**
@@ -16,10 +15,9 @@ export abstract class Tarjeta extends MetodoPago {
     * Crea una instancia base para un método de pago con tarjeta.
     * 
     * @constructor
-    * @param {DiaSemana[]} diaSemana - Arreglo de días de la semana en los que aplican los descuentos para la tarjeta.
-    * @param {number} porcentajeDescuentoSemana - El porcentaje de descuento aplicable durante dichos días.
+    * @param {number} descuentoPropio - El descuento propio aplicable al medio de pago.
     */
-   public constructor(diaSemana: DiaSemana[], porcentajeDescuentoSemana: number) {
-      super(diaSemana, porcentajeDescuentoSemana);
+   public constructor(descuentoPropio: number) {
+      super(descuentoPropio);
    }
 }
