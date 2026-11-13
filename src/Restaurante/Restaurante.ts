@@ -144,10 +144,9 @@ export class Restaurante {
         pedido.confirmar();
         const itemsCocina: ItemPedido[] = [];
         for (const itemPedido of pedido.getItems()) {
-            itemsCocina.push(itemPedido);
-            /*for (const producto of itemPedido.getItem().obtenerProductos()) {
+            for (const producto of itemPedido.getItem().obtenerProductos()) {
                 itemsCocina.push(new ItemPedido(producto, itemPedido.getCantidad()));
-            }*/
+            }
         }
         this.itemsEnCocina.set(pedido, itemsCocina);
         for (const itemCocina of itemsCocina) {

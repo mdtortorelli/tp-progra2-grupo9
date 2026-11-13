@@ -259,14 +259,9 @@ Menu .l.> Item
 Salon *-- Mesa
 Combo *-r-Producto
 Pedido *-- MetodoPago
-Restaurante -r-> Estacion : estacion
-Estacion --> "0..1" Estacion : siguiente
+Restaurante -r-> Estacion 
 Restaurante *--- Pedido
 ItemPedido *-r- Item
 
-
-note right of Estacion{
-    Habria que crear una cola por cada tipo de estado? (LISTO,EN_PREPARACION,PENDIENTE)
-}
 
 @enduml

@@ -248,7 +248,7 @@ describe('Restaurante', () => {
       });
 
       it('aplica solo el descuento más beneficioso', () => {
-        const cobrado = restaurante.facturarPedido(pedido, efectivo, DiaSemana.MARTES);
+        const cobrado = restaurante.facturarPedido(pedido, efectivo, DiaSemana.LUNES);
 
         expect(cobrado).toBe(8000);
       });
