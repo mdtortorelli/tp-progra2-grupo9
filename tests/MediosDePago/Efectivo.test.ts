@@ -11,10 +11,16 @@ function crearPedidoMock(): Pedido {
 }
 
 describe('Efectivo', () => {
+
+  let efectivo: Efectivo;
+  
+      beforeEach(() => {
+        efectivo = new Efectivo(20);
+      });
+
   it('aplica el descuento de efectivo si es mejor que el semanal', () => {
     const pedidoMock = crearPedidoMock();
-    const efectivo = new Efectivo(20); // efectivo 20% > semanal 10%
-
+    
     efectivo.realizarPago(pedidoMock, 1000, 0);
 
     expect(pedidoMock.setTotal).toHaveBeenCalledWith(800); // 1000 - 20%
@@ -22,7 +28,7 @@ describe('Efectivo', () => {
 
   it('aplica el descuento semanal si es mejor que el de efectivo', () => {
     const pedidoMock = crearPedidoMock();
-    const efectivo = new Efectivo(5);
+    efectivo.setDescuento(5);
 
     efectivo.realizarPago(pedidoMock, 1000, 30);
 
@@ -31,7 +37,7 @@ describe('Efectivo', () => {
 
   it('aplica solo el descuento de efectivo si no coincide el día semanal', () => {
     const pedidoMock = crearPedidoMock();
-    const efectivo = new Efectivo(15); // Si no hay un dia con descuento, solo se tomara el descuento de efectivo
+    efectivo.setDescuento(15); // Si no hay un dia con descuento, solo se tomara el descuento de efectivo
 
     efectivo.realizarPago(pedidoMock, 1000, 0);
 
@@ -40,7 +46,7 @@ describe('Efectivo', () => {
 
   it('sin descuento si ninguno aplica', () => {
     const pedidoMock = crearPedidoMock();
-    const efectivo = new Efectivo(0);
+    efectivo.setDescuento(0);
 
     efectivo.realizarPago(pedidoMock, 1000, 0);
 
@@ -49,10 +55,26 @@ describe('Efectivo', () => {
 
   it('empate entre efectivo y semanal aplica ese mismo porcentaje', () => {
     const pedidoMock = crearPedidoMock();
-    const efectivo = new Efectivo(10);
+    efectivo.setDescuento(10);
 
     efectivo.realizarPago(pedidoMock, 1000,0);
 
     expect(pedidoMock.setTotal).toHaveBeenCalledWith(900);
   });
+
+  it('get descuento de efectivo', () => {
+    const pedidoMock = crearPedidoMock();
+    efectivo.setDescuento(10);
+
+    expect(efectivo.getDescuento()).toBe(10);
+  });
+
+    it('set descuento de efectivo', () => {
+    const pedidoMock = crearPedidoMock();
+    efectivo.setDescuento(10);
+
+    efectivo.setDescuento(20);
+    expect(efectivo.getDescuento()).toBe(20);
+  });
+
 });

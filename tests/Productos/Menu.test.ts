@@ -63,5 +63,4 @@ describe(Menu, () => {
 
         expect(instance.getItemsMenu()).toEqual([itemMock,itemMock2]);
     });
-       
 });

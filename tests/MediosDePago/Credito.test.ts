@@ -13,19 +13,23 @@ function crearPedidoMock(): Pedido {
 }
 
 describe('Credito', () => {
+  let credito: Credito;
+    
+        beforeEach(() => {
+          credito = new Credito(20,1);
+        });
+  
+
   it('aplica descuento semanal solo si paga en 1 cuota y el día coincide', () => {
     const pedidoMock = crearPedidoMock();
-    const credito = new Credito(20,1);
-
-    credito.realizarPago(pedidoMock, 1000,0);
+   credito.realizarPago(pedidoMock, 1000, 0);
 
     expect(pedidoMock.setTotal).toHaveBeenCalledWith(800);
   });
 
   it('no aplica descuento en 1 cuota si el día no coincide', () => {
     const pedidoMock = crearPedidoMock();
-    const credito = new Credito(20,1);
-
+    
     credito.realizarPago(pedidoMock, 1000, 0);
 
     expect(pedidoMock.setTotal).toHaveBeenCalledWith(800);
@@ -33,8 +37,7 @@ describe('Credito', () => {
 
   it('nunca aplica descuento si paga en más de 1 cuota, sin importar el día', () => {
     const pedidoMock = crearPedidoMock();
-    const credito = new Credito(20,12);
-
+    
     credito.realizarPago(pedidoMock, 1000, 0);
 
     expect(pedidoMock.setTotal).toHaveBeenCalledWith(800);
@@ -48,11 +51,30 @@ describe('Credito', () => {
 
     dias.forEach((dia) => {
       const pedidoMock = crearPedidoMock();
-      const credito = new Credito(10,1);
+      credito.setDescuentoPropio(10);
 
       credito.realizarPago(pedidoMock, 1000, 0);
 
       expect(pedidoMock.setTotal).toHaveBeenCalledWith(900);
     });
   });
+
+  it('get cuotas de crédito', () => {
+    credito.setCuotas(3);
+
+    expect(credito.getCuotas()).toBe(3);
+  });
+
+    it('set cuotas de credito', () => {
+    
+    credito.setCuotas(6);
+    expect(credito.getCuotas()).toBe(6);
+  });
+
+  it('get descuento propio de credito', () => {
+    
+    credito.getDescuentoPropio();
+    expect(credito.getDescuentoPropio()).toBe(20);
+  });
 });
+

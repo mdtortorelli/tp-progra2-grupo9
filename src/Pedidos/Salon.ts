@@ -1,9 +1,8 @@
 import { Pedido } from "./Pedido";
 import { Cliente } from "../Restaurante/Cliente";
 import MetodoPago from "../MediosDePago/MetodoPago";
-import { AtencionPedido } from "./AtencionPedido";
+//import { AtencionPedido } from "./AtencionPedido";
 import { Mesa } from "./Mesa";
-import { EstadoPedido } from "./EstadoPedido";
 
 /**
  * Representa un pedido realizado para ser consumido en el salón del establecimiento, 
@@ -14,7 +13,7 @@ import { EstadoPedido } from "./EstadoPedido";
  * @extends {Pedido}
  * @implements {AtencionPedido}
  */
-export class Salon extends Pedido implements AtencionPedido {
+export class Salon extends Pedido { //implements AtencionPedido {
     /** Mesa física asociada al pedido en el salón. */
     private mesa: Mesa;
 
@@ -50,43 +49,4 @@ export class Salon extends Pedido implements AtencionPedido {
         this.mesa = mesa;
     }
 
-    /**
-     * Elimina el último ítem o acción registrada deshaciendo la última modificación realizada.
-     * 
-     * @override
-     * @returns {void}
-     */
-    public eliminarItem(): void {
-        this.deshacerUltimaModificacion();
-    }
-
-    /**
-     * Obtiene el estado actual en el que se encuentra el pedido del salón.
-     * 
-     * @override
-     * @returns {EstadoPedido} El estado actual del pedido.
-     */
-    public obtenerEstadoPedido(): EstadoPedido {
-        return this.getEstado();
-    }
-
-    /**
-     * Consulta e imprime en consola los estados actuales de preparación de cada uno de los ítems del pedido.
-     * 
-     * @override
-     * @returns {void}
-     */
-    public consultarEstadosDeItems(): void {
-        this.obtenerEstadosItems();
-    }
-
-    /**
-     * Confirma formalmente el pedido del salón, cambiando su estado a confirmado.
-     * 
-     * @override
-     * @returns {void}
-     */
-    public confirmarPedido(): void {
-        this.confirmar();
-    }
 }

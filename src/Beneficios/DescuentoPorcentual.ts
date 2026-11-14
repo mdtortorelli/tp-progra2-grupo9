@@ -22,17 +22,11 @@ export class DescuentoPorcentual extends TipoDescuento {
      * @throws {Error} Lanza un error si el porcentaje es menor o igual a cero.
      */
     public constructor(porcentaje: number) {     
-        try {
-           
-            if (porcentaje <= CERO) 
-            {
-                throw new Error;
-            }
-            super(porcentaje);
-        } 
-        catch (Error) {
+        if (porcentaje <= CERO) 
+        {
             throw new Error('El porcentaje no puede ser negativo');
         }
+        super(porcentaje);        
     }
 
     /**
@@ -54,17 +48,13 @@ export class DescuentoPorcentual extends TipoDescuento {
      * @throws {Error} Lanza un error si el porcentaje es menor o igual a cero.
      */
     public setPorcentaje(porcentaje: number): void {
-        try {
-            const cero = 0;
-            if (porcentaje <= cero) 
-            {
-                throw new Error('El porcentaje no puede ser negativo');
-            }
-            this.setDescuento(porcentaje);
-        } 
-        catch (Error) {
-            throw new Error;
-        }        
+        const cero = 0;
+        if (porcentaje <= cero) 
+        {
+            throw new Error('El porcentaje no puede ser negativo');
+        }
+        this.setDescuento(porcentaje);
+                
     }
 
     /**

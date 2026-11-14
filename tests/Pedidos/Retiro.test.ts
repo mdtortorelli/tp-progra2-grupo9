@@ -41,7 +41,7 @@ describe("Retiro", () => {
     it("deshace la ultima modificacion e informa por consola", () => {
       retiro.agregarItem(crearItem());
 
-      retiro.eliminarItem();
+      retiro.deshacerUltimaModificacion();
 
       expect(retiro.getItems()).toEqual([]);
       expect(logSpy).toHaveBeenCalledWith(
@@ -50,7 +50,7 @@ describe("Retiro", () => {
     });
 
     it("sin historial no modifica el pedido", () => {
-      retiro.eliminarItem();
+      retiro.deshacerUltimaModificacion();
 
       expect(retiro.getItems()).toEqual([]);
       expect(logSpy).toHaveBeenCalledWith("No hay modificaciones para deshacer.");
@@ -59,16 +59,9 @@ describe("Retiro", () => {
 
   describe("obtenerEstadoPedido", () => {
     it("devuelve el estado si se consulta su propio pedido", () => {
-      expect(retiro.obtenerEstadoPedido(retiro)).toBe(EstadoPedido.EN_CONSTRUCCION);
+      expect(retiro.getEstado()).toBe(EstadoPedido.EN_CONSTRUCCION);
     });
-
-    it("lanza error si se consulta otro pedido", () => {
-      const otro = new Retiro(crearCliente(), crearMetodoPago(), horario);
-
-      expect(() => retiro.obtenerEstadoPedido(otro)).toThrow(
-        "Este mozo solo puede consultar su propio pedido."
-      );
-    });
+    
   });
 
   describe("consultarEstadosDeItems", () => {
@@ -77,7 +70,7 @@ describe("Retiro", () => {
       retiro.agregarItem(crearItem());
 
      
-      retiro.consultarEstadosDeItems(retiro);
+      retiro.obtenerEstadosItems();
 
    expect(logSpy).toHaveBeenCalledWith("Revisando estado para el retiro de las 20:30");
     });
@@ -87,14 +80,14 @@ describe("Retiro", () => {
     it("confirma el pedido e informa por consola", () => {
       retiro.agregarItem(crearItem());
 
-      retiro.confirmarPedido(retiro);
+      retiro.confirmar();
 
       expect(retiro.getEstado()).toBe(EstadoPedido.CONFIRMADO);
       expect(logSpy).toHaveBeenCalledWith("Pedido confirmado para retirar a las 20:30");
     });
 
     it("lanza error si el pedido no tiene items", () => {
-      expect(() => retiro.confirmarPedido(retiro)).toThrow(
+      expect(() => retiro.confirmar()).toThrow(
         "No se puede confirmar un pedido sin items."
       );
     });
