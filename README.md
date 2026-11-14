@@ -88,6 +88,3 @@ npm run test
 
 # Compilar Solución
 npm run build
-
-# Ejecutar index
-npm run start
