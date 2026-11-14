@@ -89,18 +89,13 @@ export class DescuentoPorcentual extends TipoDescuento {
      * @throws {Error} Lanza un error si el precio final resultante es menor o igual a cero.
      */
     public aplicarDescuento(combo: Combo): number {
-        try {
-            const precio = combo.obtenerPrecioSinDescuento();
-            const descuento = precio - precio * this.convertirPorcentajeADecimal();
-            if (descuento <= CERO)
-            {
-                throw new Error;
-            }
-            return descuento; 
-
-        } catch
+        const precio = combo.obtenerPrecioSinDescuento();
+        const descuento = precio - precio * this.convertirPorcentajeADecimal();
+        if (descuento <= CERO)
         {
             throw new Error('El precio no puede ser menor o igual a cero');
+    
         }
+        return descuento; 
     }
 }
