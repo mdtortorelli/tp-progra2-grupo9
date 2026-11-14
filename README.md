@@ -32,7 +32,42 @@ El diseño interno de clases prioriza principios SOLID, alta cohesión y bajo ac
 
 * `src/` - Contiene el código fuente del dominio y la lógica de negocio.
 * `tests/` - Pruebas unitarias desarrolladas con Jest.
-* `src/integration/` - Clase de integración requerida para la ejecución de pruebas automatizadas estandarizadas.
+
+---
+
+## 📑 Utilización de Patrones
+
+# Composite - Item/Menú 
+
+El diseño contempla la utilización de patrones como por ejemplo el Patrón Estructural **Composite** donde se observa la jerarquía de productos y combo, en las clases asociadas a Item, Menu.
+Permite tratar de manera uniforme tanto a los elementos individuales -hojas/Leaves- *Producto* como a los contenedores complejos -kits/menús- *Combo* que agrupan a otros elementos.
+El Menú puede almacenar colecciones de elementos y trabajar con ellos a través de una interfaz, permitiendo calcular precios, recorrer el árbol de forma recursiva sin preguntar constantemente por el tipo de objeto.
+
+# Chain Of Responsability - Estaciones de cocina
+
+1. Nombre y categoria: Chain of Responsability, categoria de comportamiento
+
+2. Problema que resuelve: En el requerimiento funcional 4 se pide que cuando se confirme un pedido, cada uno de sus items se distribuyan a las estaciones que correspondan. Tambien el requerimiento funcional 5 que indica que se debe de agregar que se procesen los items en el orden que le llegaron. Con este patron el **Restaurante** le entrega cada item a la primera estacion de la "Cadena" y cada estacion decide si lo prepara o si se lo pasa a la siguiente
+
+3. Participantes: 
+Handler / BaseHandler: La clase **Estacion** siendo la responsable de proveer el atributo siguiente y los meteodos setSiguiente,recibir y puedePreparar
+
+ConcreteHandlers: Son todas las subclases de la Estacion (Parrilla,CocinaFria,etc.)
+
+4. Diagrama:
+![alt text](image.png)
+
+
+5. Justificacion:
+
+Cumplimos el principio SOLID de Abierto y Cerrado ya que cada estacion nueva que se agregue forma parte de la cadena del chain of responsability
+
+Cumplimos el principio SOLID de Responsabilidad Unica ya que cada estacion decide por si misma que puede preparar
+
+Costos/limitacion: 
+
+Un item puede llegar al final de la cadena de estaciones sin que nadie lo maneje.
+
 
 ---
 
@@ -41,6 +76,8 @@ El diseño interno de clases prioriza principios SOLID, alta cohesión y bajo ac
 El proyecto cuenta con una cobertura de pruebas unitarias superior al **80%**, garantizando el correcto funcionamiento de cada regla de negocio.
 
 Para ejecutar las pruebas y verificar la cobertura, utiliza los siguientes comandos:
+
+
 
 
 # Instalar dependencias

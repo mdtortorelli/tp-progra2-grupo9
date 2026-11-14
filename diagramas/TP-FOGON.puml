@@ -3,27 +3,30 @@
 class Restaurante{
     - menu: Menu
     - pedidosTotales: Pedido[]
-    - estaciones: Estacion[]
+    - estacion: Estacion
+    - itemsEnCocina: Map<Pedido, ItemPedido[]>
 
     - estaRegistrado(p: Pedido): boolean
-    - tieneEstacion(e: Estacion): boolean
     + registrarPedido(p: Pedido): void
-    + agregarEstacion(e: Estacion): void
-    + buscarEstacionPara(prod: Producto): Estacion
+    + getEstacion(): Estacion
+    + setEstacion(e: Estacion): void
     + confirmarPedido(p: Pedido): void
+    + obtenerItemsEnCocina(p: Pedido): ItemPedido[]
     + facturarPedido(p: Pedido, m: MetodoPago): void
     + obtenerPedidosFinalizados(): Pedido[]
+    + obtenerDescuentoSemana(diaActual?: DiaSemana): number
     
     + getters y setters ()
 }
 
 abstract class Pedido{
     - cliente:Cliente,
-    - pedidosItems:Item[]
+    - pedidosItems:ItemPedido[]
     - estado:EstadoPedidos
     - metodoDePago:MetodoPago
-    - historialItems: Item[][]
+    - historialItems: ItemPedido[][]
     - total: number | null = null
+    - descuentoAplicado: number = 0
 
     - guardarHistorial(): void 
     + agregarItem():void
@@ -35,25 +38,15 @@ abstract class Pedido{
     + getters y setters ()    
 }
 
-class Salon extends Pedido implements AtencionPedido{
+class Salon extends Pedido {
     - mesa:Mesa
-
-    + eliminarItem(): void
-    + obtenerEstadoPedido(): EstadoPedido
-    + consultarEstadosDeItems(): void
-    + confirmarPedido(): void
-
+  
     + getters y setters () 
 }
 
-class Retiro extends Pedido implements AtencionPedido{
+class Retiro extends Pedido {
     - horarioRetiro:DateTime
-
-    + eliminarItem(): void
-    + obtenerEstadoPedido(): EstadoPedido
-    + consultarEstadosDeItems(): void
-    + confirmarPedido(): void
-
+    
     + getters y setters () 
 }
 
@@ -97,13 +90,6 @@ class Mesa{
     - numero: number
 
     + getters y setters ()
-}
-
-interface AtencionPedido{
-    + eliminarItem(): void
-    + obtenerEstadoPedido(): EstadoPedido
-    + consultarEstadosDeItems(): void
-    + confirmarPedido(): void
 }
 
 class Producto implements Item {
@@ -184,8 +170,8 @@ abstract class MetodoPago{
     - descuentoPropio: number
 
     + obtenerDescuentoSemana():number
-    + obtenerPorcentajeDescuento(diaActual?: DiaSemana):number
-    + realizarPago(p:Pedido, subtotal: number, diaActual?: DiaSemana):void 
+    + obtenerPorcentajeDescuento(descuentoSemanal: number):number
+    + realizarPago(p:Pedido, subtotal: number, descuentoSemanal: number):void 
     + getters y setters ()
 }
 
@@ -203,7 +189,7 @@ class Debito extends Tarjeta{}
 class Credito extends Tarjeta{
     - cuotas: number
 
-    + obtenerDescuentoSemana(diaActual?: DiaSemana): number
+    + obtenerDescuentoSemana(descuentoSemanal: number): number
     + getters y setters ()
 }
 
@@ -213,16 +199,19 @@ class BilleteraVirtual extends MetodoPago{}
 abstract class Estacion{
     - nombre: String
     - categoria: CategoriaProd
-    - colaProductos: Queue<Producto>
-    - enPreparacion: Producto[]
+    - colaItems: Queue<ItemPedido>
+    - enPreparacion: ItemPedido[]
+    - siguiente: Estacion
 
-    + puedePreparar(prod: Producto): boolean
-    + recibir(prod: Producto): void
-    + comenzarSiguiente(): Producto
-    + marcarListo(prod: Producto): void
-    + estaEnPreparacion(prod: Producto): boolean
-    + obtenerPendientes(): Producto[]
-    + obtenerEnPreparacion(): Producto[]
+    + setSiguiente(e: Estacion): void
+    + getSiguiente(): Estacion
+    + puedePreparar(i: ItemPedido): boolean
+    + recibir(i: ItemPedido): void
+    + comenzarSiguiente(): ItemPedido
+    + marcarListo(i: ItemPedido): void
+    - estaEnPreparacion(i: ItemPedido): boolean
+    + obtenerPendientes(): ItemPedido[]
+    + obtenerEnPreparacion(): ItemPedido[]
     + getters y setters ()
 }
 
@@ -234,16 +223,18 @@ class CocinaDulce extends Estacion{}
 class ItemPedido {
     - item: Item
     - cantidad: number
-    - estado: EstadoItem
+    - estado: EstadoProducto
     + iniciar(): void
     + finalizar(): void
     + puedeModificarse(): boolean
+
+    + getters y setters ()
 }
 
 
 
 Estacion o--  ItemPedido
-Pedido *--  ItemPedido
+Pedido *-r-  ItemPedido
 Menu *-- categoriaMenu
 Producto *--categoriaProd
 Pedido .r.> Item
@@ -251,12 +242,9 @@ Menu .l.> Item
 Salon *-- Mesa
 Combo *-r-Producto
 Pedido *-- MetodoPago
-Restaurante *--r-- Estacion
+Restaurante -r-> Estacion 
 Restaurante *--- Pedido
+ItemPedido *-r- Item
 
-
-note right of Estacion{
-    Habria que crear una cola por cada tipo de estado? (LISTO,EN_PREPARACION,PENDIENTE)
-}
 
 @enduml

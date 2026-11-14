@@ -1,0 +1,34 @@
+@startuml 'Creación de Pedido'
+skinparam style strictuml
+autonumber
+
+actor Usuario
+participant "Sistema / Controlador" as Ctrl
+participant "Pedido" as Pedido
+participant "ItemPedido" as Item
+participant "Producto" as Producto
+
+Usuario -> Ctrl: Iniciar nuevo pedido (Mesa / Salón / Envio)
+activate Ctrl
+
+Ctrl -> Pedido ** : crear(datosPedido)
+activate Pedido
+
+Pedido -> Producto: obtenerProducto(idProducto)
+activate Producto
+Producto --> Pedido: datosProducto
+deactivate Producto
+
+Pedido -> Item ** : crear(producto, cantidad)
+activate Item
+Item --> Pedido: itemPedidoInstanciado
+deactivate Item
+
+Pedido -> Pedido: agregarItem(itemPedido)
+Pedido --> Ctrl: Pedido creado correctamente
+deactivate Pedido
+
+Ctrl --> Usuario: Confirmar creación de pedido y mostrar resumen
+deactivate Ctrl
+
+@enduml
