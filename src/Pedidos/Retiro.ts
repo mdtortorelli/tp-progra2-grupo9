@@ -1,8 +1,8 @@
 import { Pedido } from "./Pedido";
 import { Cliente } from "../Restaurante/Cliente";
 import MetodoPago from "../MediosDePago/MetodoPago";
-import { AtencionPedido } from "./AtencionPedido";
-import { EstadoPedido } from "./EstadoPedido";
+//import { AtencionPedido } from "./AtencionPedido";
+
 
 /**
  * Representa un pedido bajo la modalidad de retiro en el local, implementando 
@@ -13,7 +13,7 @@ import { EstadoPedido } from "./EstadoPedido";
  * @extends {Pedido}
  * @implements {AtencionPedido}
  */
-export class Retiro extends Pedido implements AtencionPedido {
+export class Retiro extends Pedido {//implements AtencionPedido {
     /** Horario programado en el que se realizará el retiro del pedido. */
     private horarioRetiro: Date;
 
@@ -55,28 +55,13 @@ export class Retiro extends Pedido implements AtencionPedido {
      * 
      * @returns {void}
      */
-    public eliminarItem(): void {
+    public deshacerUltimaModificacion(): void {
+        super.deshacerUltimaModificacion();
         const hora = this.horarioRetiro.getHours();
         const minutos = this.horarioRetiro.getMinutes();
         console.log(`Borrando la ultima accion del retiro de las ${hora}:${minutos}`);
-        this.deshacerUltimaModificacion();
     }
 
-    /**
-     * Obtiene el estado actual de un pedido dado, validando que corresponda 
-     * a esta misma instancia de retiro.
-     * 
-     * @override
-     * @param {Pedido} pedido - El pedido a consultar.
-     * @returns {EstadoPedido} El estado actual del pedido.
-     * @throws {Error} Lanza un error si el pedido consultado no coincide con esta instancia.
-     */
-    public obtenerEstadoPedido(pedido: Pedido): EstadoPedido {
-        if (pedido !== this) {
-            throw new Error("Este mozo solo puede consultar su propio pedido.");
-        }
-        return this.getEstado();
-    }
 
     /**
      * Consulta e imprime los estados de los ítems de un pedido específico, 
@@ -86,11 +71,11 @@ export class Retiro extends Pedido implements AtencionPedido {
      * @param {Pedido} pedido - El pedido cuyos ítems se van a consultar.
      * @returns {void}
      */
-    public consultarEstadosDeItems(pedido: Pedido): void {
+    public obtenerEstadosItems(): void {
+        super.obtenerEstadosItems();
         const hora = this.horarioRetiro.getHours();
         const minutos = this.horarioRetiro.getMinutes();
         console.log(`Revisando estado para el retiro de las ${hora}:${minutos}`);
-        pedido.obtenerEstadosItems();
     }
 
     /**
@@ -101,8 +86,8 @@ export class Retiro extends Pedido implements AtencionPedido {
      * @param {Pedido} pedido - El pedido que se desea confirmar.
      * @returns {void}
      */
-    public confirmarPedido(pedido: Pedido): void {
-        pedido.confirmar();
+    public confirmar(): void {
+        super.confirmar();
         const hora = this.horarioRetiro.getHours();
         const minutos = this.horarioRetiro.getMinutes();
         console.log(`Pedido confirmado para retirar a las ${hora}:${minutos}`);

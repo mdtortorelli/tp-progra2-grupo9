@@ -37,6 +37,8 @@ El diseño interno de clases prioriza principios SOLID, alta cohesión y bajo ac
 
 ## 📑 Utilización de Patrones
 
+# Composite - Item/Menú 
+
 El diseño contempla la utilización de patrones como por ejemplo el Patrón Estructural **Composite** donde se observa la jerarquía de productos y combo, en las clases asociadas a Item, Menu.
 Permite tratar de manera uniforme tanto a los elementos individuales -hojas/Leaves- *Producto* como a los contenedores complejos -kits/menús- *Combo* que agrupan a otros elementos.
 El Menú puede almacenar colecciones de elementos y trabajar con ellos a través de una interfaz, permitiendo calcular precios, recorrer el árbol de forma recursiva sin preguntar constantemente por el tipo de objeto.

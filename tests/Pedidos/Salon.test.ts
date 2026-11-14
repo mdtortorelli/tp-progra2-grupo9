@@ -44,13 +44,13 @@ describe("Salon", () => {
     it("deshace la ultima modificación", () => {
       salon.agregarItem(crearItem());
 
-      salon.eliminarItem();
+      salon.deshacerUltimaModificacion();
 
       expect(salon.getItems()).toEqual([]);
     });
 
     it("sin historial no modifica el pedido", () => {
-      salon.eliminarItem();
+      salon.deshacerUltimaModificacion();
 
       expect(salon.getItems()).toEqual([]);
       expect(logSpy).toHaveBeenCalledWith("No hay modificaciones para deshacer.");
@@ -59,14 +59,14 @@ describe("Salon", () => {
 
   describe("obtenerEstadoPedido", () => {
     it("devuelve EN_CONSTRUCCION al inicio", () => {
-      expect(salon.obtenerEstadoPedido()).toBe(EstadoPedido.EN_CONSTRUCCION);
+      expect(salon.getEstado()).toBe(EstadoPedido.EN_CONSTRUCCION);
     });
 
     it("devuelve CONFIRMADO despues de confirmar", () => {
       salon.agregarItem(crearItem());
-      salon.confirmarPedido();
+      salon.confirmar();
 
-      expect(salon.obtenerEstadoPedido()).toBe(EstadoPedido.CONFIRMADO);
+      expect(salon.getEstado()).toBe(EstadoPedido.CONFIRMADO);
     });
   });
 
@@ -76,7 +76,7 @@ describe("Salon", () => {
       salon.agregarItem(itemPedidoMock1);
 
       // Ejecuta la consulta sin romper la aplicacion
-      salon.consultarEstadosDeItems();
+      salon.obtenerEstadosItems();
       
       // Validamos de forma generica que al menos intente usar la consola o correr el metodo
       expect(logSpy).toBeDefined();
@@ -87,22 +87,22 @@ describe("Salon", () => {
     it("confirma el pedido si tiene items", () => {
       salon.agregarItem(crearItem());
 
-      salon.confirmarPedido();
+      salon.confirmar();
 
       expect(salon.getEstado()).toBe(EstadoPedido.CONFIRMADO);
     });
 
     it("lanza error si no tiene items", () => {
-      expect(() => salon.confirmarPedido()).toThrow(
+      expect(() => salon.confirmar()).toThrow(
         "No se puede confirmar un pedido sin items."
       );
     });
 
     it("lanza error si ya estaba confirmado", () => {
       salon.agregarItem(crearItem());
-      salon.confirmarPedido();
+      salon.confirmar();
 
-      expect(() => salon.confirmarPedido()).toThrow("El pedido ya fue confirmado.");
+      expect(() => salon.confirmar()).toThrow("El pedido ya fue confirmado.");
     });
   });
 });

@@ -38,25 +38,15 @@ abstract class Pedido{
     + getters y setters ()    
 }
 
-class Salon extends Pedido implements AtencionPedido{
+class Salon extends Pedido {
     - mesa:Mesa
-
-    + eliminarItem(): void
-    + obtenerEstadoPedido(): EstadoPedido
-    + consultarEstadosDeItems(): void
-    + confirmarPedido(): void
-
+  
     + getters y setters () 
 }
 
-class Retiro extends Pedido implements AtencionPedido{
+class Retiro extends Pedido {
     - horarioRetiro:DateTime
-
-    + eliminarItem(): void
-    + obtenerEstadoPedido(): EstadoPedido
-    + consultarEstadosDeItems(): void
-    + confirmarPedido(): void
-
+    
     + getters y setters () 
 }
 
@@ -100,13 +90,6 @@ class Mesa{
     - numero: number
 
     + getters y setters ()
-}
-
-interface AtencionPedido{
-    + eliminarItem(): void
-    + obtenerEstadoPedido(): EstadoPedido
-    + consultarEstadosDeItems(): void
-    + confirmarPedido(): void
 }
 
 class Producto implements Item {

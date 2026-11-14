@@ -23,19 +23,12 @@ export class DescuentoFijo extends TipoDescuento {
      * @throws {Error} Lanza un error si el descuento supera o iguala el precio total del combo.
      */
     public aplicarDescuento(combo: Combo): number {
-        try {        
-                          
-            const descuento = combo.obtenerPrecioSinDescuento() - this.getDescuento(); 
-            
-            if (descuento <= CERO)
-            {
-                throw new Error;
-            }
-            return descuento;
-        } 
-        catch
+        const descuento = combo.obtenerPrecioSinDescuento() - this.getDescuento(); 
+        
+        if (descuento <= CERO)
         {
             throw new Error('El monto a descontar no puede superar el precio');
         }
+        return descuento;
     }
 }
