@@ -3,15 +3,11 @@ skinparam style strictuml
 autonumber
 
 actor Usuario
-participant "Sistema / Controlador" as Ctrl
 participant "Pedido" as Pedido
 participant "ItemPedido" as Item
 participant "Producto" as Producto
 
-Usuario -> Ctrl: Iniciar nuevo pedido (Mesa / Salón / Envio)
-activate Ctrl
-
-Ctrl -> Pedido ** : crear(datosPedido)
+Usuario -> Pedido ** : Iniciar nuevo pedido (Mesa / Salón / Envio)
 activate Pedido
 
 Pedido -> Producto: obtenerProducto(idProducto)

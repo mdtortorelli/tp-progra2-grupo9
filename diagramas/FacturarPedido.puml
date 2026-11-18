@@ -1,0 +1,36 @@
+@startuml 'Facturar Pedido'
+skinparam style strictuml
+autonumber
+
+actor Usuario
+participant "Restaurante" as Restaurante
+participant "Pedido" as Pedido
+participant "MetodoDePago" as MetodoDePago
+
+participant "TipoDescuento" as TipoDesc
+
+Usuario -> Restaurante: facturarPedido\n(pedido, metodoDePago, diaActual) 
+activate Restaurante
+Restaurante -> Pedido: setMetodoDePago(metodoDePago)
+activate Pedido
+
+
+Restaurante -> MetodoDePago: RealizarPago(pedido, subtotal, descuentoSemanal)
+activate MetodoDePago
+MetodoDePago -> MetodoDePago: obtenerPorcentajeDescuento(descuentoSemanal)
+MetodoDePago -> MetodoDePago: getDescuentoPropio()
+MetodoDePago -> TipoDesc : obtenerMasBeneficioso(getDescuentoPropio(), descuentoSemanal)
+activate TipoDesc
+TipoDesc --> MetodoDePago: tipoDescuentoObtenido
+deactivate TipoDesc
+
+MetodoDePago -> MetodoDePago: calcularTotal(tipoDescuentoObtenido,subtotal)
+MetodoDePago -> Pedido: setTotal(total)
+Pedido -> Pedido: setDescuentoAplicado(tipoDescuentoObtenido)
+deactivate MetodoDePago
+Restaurante -> Pedido: setEstado(EstadoPedido.ENVIADO)
+deactivate Pedido
+Restaurante --> Usuario: getTotal()
+deactivate Restaurante
+
+@enduml

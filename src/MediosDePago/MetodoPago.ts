@@ -64,9 +64,16 @@ export default abstract class MetodoPago {
      */
     public realizarPago(pedido: Pedido, subtotal: number, descuentoSemanal: number): void {
         const porcentaje = this.obtenerPorcentajeDescuento(descuentoSemanal);
-        const descuento = (subtotal * porcentaje) / CIEN;
-        const total = subtotal - descuento;
+        
+        const total = this.calcularTotal(porcentaje, subtotal);
         pedido.setTotal(total);
         pedido.setDescuentoAplicado(porcentaje);
+    }
+
+    // eslint-disable-next-line @typescript-eslint/class-methods-use-this
+    private calcularTotal(porcentaje: number, subtotal: number):number {
+        const descuento = (subtotal * porcentaje) / CIEN;
+        const total = subtotal - descuento;
+        return total;
     }
 }
