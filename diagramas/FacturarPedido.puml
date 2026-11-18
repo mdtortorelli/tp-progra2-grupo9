@@ -1,0 +1,36 @@
+@startuml 'Facturar Pedido'
+skinparam style strictuml
+autonumber
+
+actor Usuario
+participant "Restaurante" as Restaurante
+participant "Pedido" as Pedido
+participant "MetodoDePago" as MetodoDePago
+
+participant "TipoDescuento" as TipoDesc
+
+Usuario -> Restaurante: Se factura el pedido
+activate Restaurante
+Restaurante -> Pedido: Se asigna el metodo de pago
+activate Pedido
+
+
+Restaurante -> MetodoDePago: Se realiza el pago utilizando el metodo seleccionado
+activate MetodoDePago
+MetodoDePago -> MetodoDePago: Se obtiene el porcentaje del descuento
+MetodoDePago -> MetodoDePago: getDescuentoPropio()
+MetodoDePago -> TipoDesc : Se obtiene el tipo de descuento mas beneficioso
+activate TipoDesc
+TipoDesc --> MetodoDePago: Se devuelve el tipo de descuento obtenido
+deactivate TipoDesc
+
+MetodoDePago -> MetodoDePago: Se calcula el total 
+MetodoDePago -> Pedido: Se setea el total del pedido
+Pedido -> Pedido: Se setea el tipo de descuento obtenido
+deactivate MetodoDePago
+Restaurante -> Pedido: Se cambia el estado del pedido a ENVIADO
+deactivate Pedido
+Restaurante --> Usuario: Se le devuelve el total al usuario
+deactivate Restaurante
+
+@enduml

@@ -1,34 +1,37 @@
-@startuml 'Creación de Pedido'
+@startuml 'Creacion de Pedido'
 skinparam style strictuml
-autonumber
 
 actor Usuario
-participant "Sistema / Controlador" as Ctrl
+participant "Restaurante" as Restaurante
 participant "Pedido" as Pedido
-participant "ItemPedido" as Item
-participant "Producto" as Producto
+participant "ItemPedido" as ItemPedido
 
-Usuario -> Ctrl: Iniciar nuevo pedido (Mesa / Salón / Envio)
-activate Ctrl
-
-Ctrl -> Pedido ** : crear(datosPedido)
+Usuario -> Pedido ** : Se crea el pedido (Salon / Retiro / Envio)
 activate Pedido
-
-Pedido -> Producto: obtenerProducto(idProducto)
-activate Producto
-Producto --> Pedido: datosProducto
-deactivate Producto
-
-Pedido -> Item ** : crear(producto, cantidad)
-activate Item
-Item --> Pedido: itemPedidoInstanciado
-deactivate Item
-
-Pedido -> Pedido: agregarItem(itemPedido)
-Pedido --> Ctrl: Pedido creado correctamente
+Pedido -> Pedido: Se setea el estado EN_CONSTRUCCION
 deactivate Pedido
 
-Ctrl --> Usuario: Confirmar creación de pedido y mostrar resumen
-deactivate Ctrl
+Usuario -> Restaurante: Se registra el pedido
+activate Restaurante
+Restaurante -> Restaurante: Se valida que no este registrado
+Restaurante -> Pedido: Se obtiene el estado del pedido
+activate Pedido
+Pedido --> Restaurante: Se devuelve el estado EN_CONSTRUCCION
+deactivate Pedido
+Restaurante -> Restaurante: Se agrega el pedido a la lista de pedidos
+Restaurante --> Usuario: Pedido registrado
+deactivate Restaurante
+
+Usuario -> ItemPedido ** : Se crea el item con el producto y la cantidad
+activate ItemPedido
+ItemPedido -> ItemPedido: Se setea el estado PENDIENTE
+deactivate ItemPedido
+
+Usuario -> Pedido: Se agrega el item al pedido
+activate Pedido
+Pedido -> Pedido: Se guarda el historial de items
+Pedido -> Pedido: Se agrega el item a la lista de items
+Pedido --> Usuario: Item agregado
+deactivate Pedido
 
 @enduml
