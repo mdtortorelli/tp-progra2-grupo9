@@ -9,28 +9,28 @@ participant "MetodoDePago" as MetodoDePago
 
 participant "TipoDescuento" as TipoDesc
 
-Usuario -> Restaurante: facturarPedido\n(pedido, metodoDePago, diaActual) 
+Usuario -> Restaurante: Se factura el pedido
 activate Restaurante
-Restaurante -> Pedido: setMetodoDePago(metodoDePago)
+Restaurante -> Pedido: Se asigna el metodo de pago
 activate Pedido
 
 
-Restaurante -> MetodoDePago: RealizarPago(pedido, subtotal, descuentoSemanal)
+Restaurante -> MetodoDePago: Se realiza el pago utilizando el metodo seleccionado
 activate MetodoDePago
-MetodoDePago -> MetodoDePago: obtenerPorcentajeDescuento(descuentoSemanal)
+MetodoDePago -> MetodoDePago: Se obtiene el porcentaje del descuento
 MetodoDePago -> MetodoDePago: getDescuentoPropio()
-MetodoDePago -> TipoDesc : obtenerMasBeneficioso(getDescuentoPropio(), descuentoSemanal)
+MetodoDePago -> TipoDesc : Se obtiene el tipo de descuento mas beneficioso
 activate TipoDesc
-TipoDesc --> MetodoDePago: tipoDescuentoObtenido
+TipoDesc --> MetodoDePago: Se devuelve el tipo de descuento obtenido
 deactivate TipoDesc
 
-MetodoDePago -> MetodoDePago: calcularTotal(tipoDescuentoObtenido,subtotal)
-MetodoDePago -> Pedido: setTotal(total)
-Pedido -> Pedido: setDescuentoAplicado(tipoDescuentoObtenido)
+MetodoDePago -> MetodoDePago: Se calcula el total 
+MetodoDePago -> Pedido: Se setea el total del pedido
+Pedido -> Pedido: Se setea el tipo de descuento obtenido
 deactivate MetodoDePago
-Restaurante -> Pedido: setEstado(EstadoPedido.ENVIADO)
+Restaurante -> Pedido: Se cambia el estado del pedido a ENVIADO
 deactivate Pedido
-Restaurante --> Usuario: getTotal()
+Restaurante --> Usuario: Se le devuelve el total al usuario
 deactivate Restaurante
 
 @enduml
